@@ -1,137 +1,81 @@
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { Fragment, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-
-import {
-    Bars3Icon,
-    ChartPieIcon,
-    CursorArrowRaysIcon,
-    FingerPrintIcon,
-    XMarkIcon,
-    UserCircleIcon
-} from '@heroicons/react/24/outline';
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, UserCircleIcon as UserCircleIconSolid } from '@heroicons/react/20/solid';
-import {Link} from "react-router-dom";
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ');
-}
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { login, register, onRedirectCallback, logout, user, isAuthenticated, isLoading, getToken } = useKindeAuth();
-    const location = useLocation();
-    const {getPermission, getPermissions} = useKindeAuth();
 
-
-    /*useEffect(() => {
-        const handleRedirectCallback = async () => {
-            try {
-                const { user, app_state } = await onRedirectCallback();
-                console.log({ user, app_state });
-                // Additional handling of user and app_state if needed
-            } catch (error) {
-                console.error('Error handling redirect callback:', error);
-            }
-        };
-
-        handleRedirectCallback();
-    }, [onRedirectCallback]);*/
-
-    /*const fetchData = async () => {
-        try {
-            const accessToken = await getToken();
-            const res = await fetch(`https://elemahana.kinde.com/api`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            });
-            const { data } = await res.json();
-            console.log({ data });
-        } catch (err) {
-            console.log(err);
-        }
-    };*/
-
-    if (isLoading) {
-    }
+    const toggleMobileMenu = () => {
+        setMobileMenuOpen(!mobileMenuOpen);
+    };
 
     return (
         <header className="bg-white bg-opacity-70 backdrop-blur text-emerald-950 sticky top-0 w-screen z-50 shadow-md">
-            <nav
-                className="text-lg h-full mx-auto flex max-w-7xl items-center relative justify-between p-6 lg:px-8 py-2 gap-4">
-                {/* Navbar content */}
+            <nav className="text-lg h-full mx-auto flex max-w-7xl items-center relative justify-between p-6 lg:px-8 py-2 gap-4">
                 <div className="flex lg:flex-1">
                     <Link to="/" className="-m-1.5 p-1.5">
-                        <span className="text-2xl font-bold flex flex-row">KUNUMAHANA <span
-                            className="font-light text-base">&trade;</span></span>
+                        <span className="text-2xl font-bold flex flex-row">
+                            KUNUMAHANA
+                            <span className="font-light text-base">&trade;</span>
+                        </span>
                     </Link>
                 </div>
-                <Link to="/" className="nav-item">
-                    <div
-                        className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">Home
-                    </div>
-                </Link>
-                <Link to="/placeOrder" className="nav-item">
-                    <div
-                        className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">Kunukanda
-                    </div>
-                </Link>
-                <Link to="/tourism" className="nav-item">
-                    <div
-                        className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">Visit
-                        Us
-                    </div>
-                </Link>
 
-
-                {/*{
-                    getPermission("view:dashboard").isGranted ? (
-                        <Link to="/dashboard" className="nav-item">
-                            <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
-                                Dashboard
-                            </div>
-                        </Link>
-                    ) : null
-                }*/}
-
-
-
-                <div
-                    className="hidden lg:flex lg:flex-1 lg:justify-end gap-4 font-medium content-center items-center align-middle">
-                    {isAuthenticated ? (
-                        <>
-                            <UserCircleIconSolid className="w-6 h-6"/>
-                            <div className="text-xs text-gray-400">{user.email}</div>
-                            <button onClick={logout}
-                                    className="px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-full text-black bg-red-200 hover:bg-red-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Logout
-                            </button>
-
-                        </>
-                    ) : (
-                        <>
-                            <button onClick={register} type="button"
-                                    className="px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-full text-black bg-lime-200 transition-all duration-200  hover:bg-lime-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500">Register
-                            </button>
-                            <button onClick={() => login(
-                                {
-                                    authUrlParams: {login_hint: "john@exmail.com"},
-                                    app_state: {
-                                        redirectTo: location.state ? location.state?.from?.pathname : null
-                                    }
-                                }
-                            )}
-                                    type="button"
-                                    className="px-3 py-1 border border-lime-500 text-sm leading-4 font-medium rounded-full text-black transition-all duration-200 hover:bg-lime-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500">Log
-                                In
-                            </button>
-                            <UserCircleIcon className="w-6 h-6"/>
-                        </>
-                    )}
+                {/*  visible on desktop, hidden on mobile */}
+                <div className="hidden lg:flex space-x-6">
+                    <Link to="/" className="nav-item">
+                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
+                            Home
+                        </div>
+                    </Link>
+                    <Link to="/dashboard" className="nav-item">
+                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
+                            Kunukanda
+                        </div>
+                    </Link>
+                    <Link to="/tourism" className="nav-item">
+                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
+                            Visit Us
+                        </div>
+                    </Link>
                 </div>
 
+                {/* Right side of the navbar */}
+                <div className="flex lg:flex-1 justify-end">
+                    {/* Login button - visible on desktop, hidden on mobile */}
+                    <Link to="/login" className="hidden lg:block nav-item">
+                        <div className="px-3 py-1 border border-lime-500 text-sm leading-4 font-medium rounded-full text-black transition-all duration-200 hover:bg-lime-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500">
+                            Login
+                        </div>
+                    </Link>
+
+                    {/* Mobile menu button - visible on mobile, hidden on desktop */}
+                    <button
+                        type="button"
+                        className="lg:hidden -m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+                        onClick={toggleMobileMenu}
+                    >
+                        <span className="sr-only">Open main menu</span>
+                        {mobileMenuOpen ? (
+                            <X className="h-6 w-6" aria-hidden="true" />
+                        ) : (
+                            <Menu className="h-6 w-6" aria-hidden="true" />
+                        )}
+                    </button>
+                </div>
             </nav>
 
+            {/* Mobile menu */}
+            {mobileMenuOpen && (
+                <div className="lg:hidden absolute top-full left-0 w-full bg-white shadow-md">
+                    <div className="space-y-1 px-2 pb-3 pt-2">
+                        <Link to="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">Home</Link>
+                        <Link to="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">Kunukanda</Link>
+                        <Link to="/tourism" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">Visit Us</Link>
+                        <Link to="/login" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">Login</Link>
+                    </div>
+                </div>
+            )}
         </header>
     );
 }

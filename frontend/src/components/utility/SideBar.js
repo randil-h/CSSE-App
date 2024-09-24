@@ -1,104 +1,90 @@
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from "react-router-dom";
-import { PiPlant } from "react-icons/pi";
-import { HiMiniCalendarDays } from "react-icons/hi2";
-import {
-    ArrowLeftStartOnRectangleIcon,
-    HomeIcon,
-    BanknotesIcon,
-    PresentationChartLineIcon
-} from '@heroicons/react/24/outline';
-import {
-    Cog6ToothIcon,
-} from '@heroicons/react/24/solid';
-import { MdOutlineInventory2 } from "react-icons/md";
-import { useEffect, useState } from "react";
-import {PiUsers } from "react-icons/pi";
+import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
+import { HomeIcon, BanknotesIcon, ArrowLeftStartOnRectangleIcon } from '@heroicons/react/24/outline';
 import { TbReportAnalytics } from "react-icons/tb";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { GrUserWorker } from "react-icons/gr";
 import { FiUsers } from "react-icons/fi";
+import axios from 'axios';
 
-export default function SideBar() {
+const Sidebar = () => {
+    const [open, setOpen] = useState(true);
     const location = useLocation();
     const [loading, setLoading] = useState(false);
+
+    const Menus = [
+        { name: "Home", path: "/dashboard", icon: HomeIcon },
+        { name: "Customers", path: "/finances/home", icon: FiUsers },
+        { name: "Collectors", path: "/crop/home", icon: GrUserWorker },
+        { name: "Schedules", path: "/employees/home", icon: AiOutlineSchedule },
+        { name: "Transactions", path: "/inventory/home", icon: BanknotesIcon },
+        { name: "Reports", path: "/insights/marketprice", icon: TbReportAnalytics },
+    ];
 
     const isActive = (path) => {
         const currentPath = location.pathname.split('/')[1];
         return currentPath === path.split('/')[1];
     };
 
-    const menuItems = [
-        { name: "Home", path: "/dashboard", icon: HomeIcon },
-        { name: "Customers", path: "/customers/home", icon: FiUsers},
-        { name: "Collectors", path: "/collectors/home", icon: GrUserWorker },
-        { name: "Schedules", path: "/schedules/home", icon: AiOutlineSchedule },
-        { name: "Transactions", path: "/transactions/home", icon: BanknotesIcon },
-        { name: "Reports", path: "/reports/home", icon: TbReportAnalytics },
-    ];
-
-    const systemItems = [
-        { name: "Logout", path: "/", icon: ArrowLeftStartOnRectangleIcon },
-    ];
-
     return (
-        <div className="bg-gray-100 bottom-0 top-12 fixed w-1/6 border-r flex flex-col justify-between divide-y divide-gray-300">
-            {/* First ul */}
-            <ul className="flex flex-col items-center text-gray-800 font-medium text-base py-4 px-3">
-                {menuItems.map((item) => (
-                    <Link key={item.name} to={item.path} className="w-full flex flex-row">
-                        <li
-                            className={`flex flex-row w-full h-12 my-1 focus:outline-none focus:ring focus:ring-lime-500 transition-all duration-200 px-1 ${
-                                isActive(item.path) ? "bg-gray-200 text-lime-700 rounded-xl px-3 shadow-xl" : "hover:bg-gray-200 hover:rounded-xl hover:shadow-xl"
-                            }`}
-                        >
-                            <div className="flex items-center justify-between w-full">
-                                <div className="pl-3 flex items-center">
-                                    {item.icon && <item.icon className="mr-4 h-5 w-5" />}
-                                    {item.name}
-                                </div>
-                                {isActive(item.path) && item.count && (
-                                    <span
-                                        className="bg-gray-600 rounded-full w-5 h-5 mr-2 flex items-center justify-center text-xs text-gray-100">
-                    {item.count}
-                  </span>
-                                )}
-                            </div>
-                        </li>
-                    </Link>
-                ))}
-            </ul>
+        <div className="flex">
+            <div
+                className={`${
+                    open ? "w-72" : "w-24"
+                } bg-gray-100 h-screen p-5 pt-8 relative duration-300 flex flex-col justify-between`}
+            >
+                <div>
+                    <div
+                        className={`absolute cursor-pointer -right-3 top-9 w-7 border-2 rounded-full bg-white ${
+                            !open ? "rotate-180" : ""
+                        }`}
+                        onClick={() => setOpen(!open)}
+                    >
+                        {open ? <IoIosArrowDropleft size={24} /> : <IoIosArrowDropright size={24} />}
+                    </div>
+                    <ul className="pt-1">
+                        {Menus.map((menu, index) => (
+                            <Link to={menu.path} key={index}>
+                                <li
+                                    className={`flex rounded-md p-4 cursor-pointer text-gray-800 font-semibold text-md items-center gap-x-4 focus:outline-none focus:ring focus:ring-lime-500 transition-all duration-200 px-1 hover:bg-gray-200 hover:rounded-xl hover:shadow-xl
+                        ${menu.gap ? "mt-9" : "mt-2"} ${
+                                        isActive(menu.path) && "bg-gray-200 text-lime-700 rounded-xl px-3 shadow-xl hover:bg-gray-200 hover:rounded-xl hover:shadow-xl"
+                                    }`}
+                                >
+                                    {React.createElement(menu.icon, { className: 'w-5 h-5 ml-2' })}
+                                    <span className={`${!open && "hidden"} origin-left duration-200 `}>
+                                        {menu.name}
+                                    </span>
+                                    {menu.count !== undefined && open && isActive(menu.path) && (
+                                        <span className="bg-gray-600 rounded-full w-5 h-5 flex items-center justify-center text-xs text-gray-100">
+                                            {loading ? '...' : menu.count}
+                                        </span>
+                                    )}
+                                </li>
+                            </Link>
+                        ))}
+                    </ul>
+                </div>
 
-            {/* Second ul */}
-            <ul className="flex flex-row items-center gap-2 font-medium text-base py-4 px-4">
-                {systemItems.map((item) => (
-                    <Link key={item.name} to={item.path} className="w-full">
-                        <li
-                            className={`flex text-gray-700 w-full h-12 my-1 focus:outline-none focus:ring focus:ring-lime-500 transition-all duration-200 px-1 ${
-                                isActive(item.path) ? "bg-gray-200 text-black rounded-xl px-3" : "hover:bg-red-100 hover:text-red-700 hover:shadow-xl hover:rounded-xl"
-                            }`}
-                        >
-                            <div className="flex items-center justify-between w-full">
-                                <div className="pl-3 flex items-center">
-                                    {item.icon && <item.icon className="mr-4 h-5 w-5" />}
-                                    {item.name}
-                                </div>
-                                {isActive(item.path) && item.count && (
-                                    <span
-                                        className="bg-gray-600 rounded-full w-5 h-5 mr-2 flex items-center justify-center text-xs text-gray-100">
-                    {item.count}
-                  </span>
-                                )}
-                            </div>
-                        </li>
-                    </Link>
-                ))}
-                {/* Add cog icon here */}
-                <li className={`flex w-16 h-12 transition-all bg-gray-200 duration-200 ${isActive("/settings") ? "text-gray-700  bg-gradient-to-br from-lime-300 to-emerald-300 duration-200 animate-spin" : "text-gray-600"} hover:bg-gray-300 rounded-full`}>
-                    <Link to="/settings" className="flex items-center justify-center w-full">
-                        <Cog6ToothIcon className="w-6 h-6" />
-                    </Link>
-                </li>
-            </ul>
+                {/* Logout Button */}
+                <div className="pb-4">
+                    <li
+                        className={`flex rounded-md p-4 cursor-pointer text-gray-800 font-semibold text-md items-center gap-x-4 focus:outline-none focus:ring focus:ring-lime-500 transition-all duration-200 px-1 hover:bg-red-100 hover:text-red-700 hover:rounded-xl hover:shadow-xl ${
+                            open ? "justify-start" : "justify-center"
+                        }`}
+                        onClick={() => {
+                            // Add your logout logic here
+                            console.log("Logout clicked");
+                        }}
+                    >
+                        {React.createElement(ArrowLeftStartOnRectangleIcon, { className: 'w-5 h-5 ml-2' })}
+                        <span className={`${!open && "hidden"} origin-left duration-200 `}>Logout</span>
+                    </li>
+                </div>
+            </div>
         </div>
     );
-}
+};
+
+export default Sidebar;
