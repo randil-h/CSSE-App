@@ -1,7 +1,8 @@
 import express from "express";
-import cors from 'cors';
+import cors from "cors";
 import mongoose from "mongoose";
-import {mongoDBURL, PORT} from "./config.js";
+import { mongoDBURL, PORT } from "./config.js";
+import binRoutes from "./routes/binRoutes.js";
 
 const app = express();
 
@@ -18,9 +19,11 @@ mongoose
     .then(() => {
         console.log('App connected to the database');
         app.listen(PORT, () => {
-            console.log(`App is listening to port : ${PORT}`);
+            console.log(`App is listening on port: ${PORT}`);
         });
     })
     .catch((error) => {
         console.log(error);
     });
+
+app.use('/bin', binRoutes);

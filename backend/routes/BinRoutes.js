@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import Bin from '../models/bin.js'; // Use ES module import
+
 const router = express.Router();
-const Bin = require('../models/bin');
 
 router.post('/', async (req, res) => {
     const { binID, zone, collectorID, collectionTime, wasteLevel } = req.body;
@@ -19,12 +20,16 @@ router.post('/', async (req, res) => {
         });
 
         await newBin.save();
-        res.status(201).json({ message: 'Bin created successfully!', bin: newBin });
+        res.status(201).json({
+            message: 'Bin created successfully!',
+            bin: newBin
+        });
     } catch (error) {
         console.error('Error creating bin:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 router.get('/', async (req, res) => {
     try {
@@ -94,4 +99,4 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

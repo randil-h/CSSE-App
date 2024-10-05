@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const binSchema = new mongoose.Schema({
     binID: { type: String, required: true },
@@ -8,4 +8,4 @@ const binSchema = new mongoose.Schema({
     wasteLevel: { type: Number, required: true },
 });
 
-module.exports = mongoose.model('Bin', binSchema);
+export default mongoose.model('Bin', binSchema);
