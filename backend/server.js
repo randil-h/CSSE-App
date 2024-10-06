@@ -3,7 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import { mongoDBURL, PORT } from "./config.js";
 import binRoutes from "./routes/binRoutes.js";
-
+import scheduleRoutes from "./routes/Schedules/ScheduleRoutes.js";
 const app = express();
 
 app.use(express.json());
@@ -27,3 +27,4 @@ mongoose
     });
 
 app.use('/bin', binRoutes);
+app.use('/schedule', scheduleRoutes);
