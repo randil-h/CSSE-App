@@ -17,7 +17,7 @@ const Sidebar = () => {
         { name: "Home", path: "/dashboard", icon: HomeIcon },
         { name: "Customers", path: "/finances/home", icon: FiUsers },
         { name: "Collectors", path: "/crop/home", icon: GrUserWorker },
-        { name: "Schedules", path: "/employees/home", icon: AiOutlineSchedule },
+        { name: "Schedules", path: "/schedules/home", icon: AiOutlineSchedule },
         { name: "Transactions", path: "/inventory/home", icon: BanknotesIcon },
         { name: "Reports", path: "/insights/marketprice", icon: TbReportAnalytics },
     ];
@@ -67,14 +67,12 @@ const Sidebar = () => {
                     </ul>
                 </div>
 
-                {/* Logout Button */}
                 <div className="pb-4">
                     <li
                         className={`flex rounded-md p-4 cursor-pointer text-gray-800 font-semibold text-md items-center gap-x-4 focus:outline-none focus:ring focus:ring-lime-500 transition-all duration-200 px-1 hover:bg-red-100 hover:text-red-700 hover:rounded-xl hover:shadow-xl ${
                             open ? "justify-start" : "justify-center"
                         }`}
                         onClick={() => {
-                            // Add your logout logic here
                             console.log("Logout clicked");
                         }}
                     >
