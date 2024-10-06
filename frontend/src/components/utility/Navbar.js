@@ -15,7 +15,7 @@ export default function Navbar() {
                 <div className="flex lg:flex-1">
                     <Link to="/" className="-m-1.5 p-1.5">
                         <span className="text-2xl font-bold flex flex-row">
-                            KUNUMAHANA
+                            BINN.
                             <span className="font-light text-base">&trade;</span>
                         </span>
                     </Link>
@@ -24,17 +24,17 @@ export default function Navbar() {
                 {/*  visible on desktop, hidden on mobile */}
                 <div className="hidden lg:flex space-x-6">
                     <Link to="/" className="nav-item">
-                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
+                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-sky-200">
                             Home
                         </div>
                     </Link>
                     <Link to="/dashboard" className="nav-item">
-                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
+                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-sky-200">
                             Kunukanda
                         </div>
                     </Link>
                     <Link to="/tourism" className="nav-item">
-                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
+                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-sky-200">
                             Visit Us
                         </div>
                     </Link>
@@ -44,7 +44,7 @@ export default function Navbar() {
                 <div className="flex lg:flex-1 justify-end">
                     {/* Login button - visible on desktop, hidden on mobile */}
                     <Link to="/login" className="hidden lg:block nav-item">
-                        <div className="px-3 py-1 border border-lime-500 text-sm leading-4 font-medium rounded-full text-black transition-all duration-200 hover:bg-lime-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500">
+                        <div className="px-3 py-1 border border-sky-500 text-sm leading-4 font-medium rounded-full text-black transition-all duration-200 hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                             Login
                         </div>
                     </Link>
