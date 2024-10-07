@@ -11,6 +11,8 @@ import Schedules from "./pages/schedules_pages/Schedules";
 import Transactions from "./pages/transactions_pages/Transactions";
 import Reports from "./pages/reports_pages/Reports";
 import ScheduleList from "./pages/schedules_pages/ScheduleList";
+import SpecialCollectionConfirmation from "./pages/schedules_pages/ConfirmationPg";
+import SpecialCollectionHistory from "./pages/schedules_pages/CollectionHistory";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -39,6 +41,8 @@ function App() {
               <Route path="/reports/home" element={<Reports />} />
 
               <Route path="/schedules/list" element={<ScheduleList />} />
+              <Route path="/schedules/conf" element={<SpecialCollectionConfirmation />} />
+              <Route path="/schedules/history" element={<SpecialCollectionHistory />} />
 
             </Routes>
         )}

@@ -41,6 +41,9 @@ export default function Schedules() {
     const goToScheduleList = () => {
         navigate("/schedules/list");
     };
+    const goToConfirmation = () => {
+        navigate("/schedules/conf");
+    };
 
     return (
         <div className="">
@@ -112,7 +115,7 @@ export default function Schedules() {
                                         className="block w-full p-2 border rounded"
                                     />
                                 </div>
-                                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Add Schedule</button>
+                                <button type="submit" onClick={goToConfirmation} className="px-4 py-2 bg-blue-600 text-white rounded">Add Schedule</button>
                             </form>
                         </div>
 
