@@ -6,12 +6,12 @@ import {Route, Routes} from "react-router-dom";
 import LoadingAnimation from "./components/utility/LoadingAnimation";
 import Dashboard from "./pages/Dashboard";
 import Customers from "./pages/customers_pages/Customers";
-import Collectors from "./pages/collectors_pages/Collectors";
 import Schedules from "./pages/schedules_pages/Schedules";
 import Transactions from "./pages/transactions_pages/Transactions";
 import Reports from "./pages/reports_pages/Reports";
-import ScheduleList from "./pages/schedules_pages/ScheduleList";
+import Collection from "./pages/collection_pages/Collection";
 import SpecialCollectionConfirmation from "./pages/schedules_pages/ConfirmationPg";
+import ScheduleList from "./pages/schedules_pages/ScheduleList";
 import SpecialCollectionHistory from "./pages/schedules_pages/CollectionHistory";
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
 
               <Route path="/customers/home" element={<Customers />} />
-              <Route path="/collectors/home" element={<Collectors />} />
+              <Route path="/collection/home" element={<Collection />} />
               <Route path="/schedules/home" element={<Schedules />} />
               <Route path="/transactions/home" element={<Transactions />} />
               <Route path="/reports/home" element={<Reports />} />
