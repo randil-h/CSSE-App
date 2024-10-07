@@ -13,6 +13,7 @@ import Collection from "./pages/collection_pages/Collection";
 import SpecialCollectionConfirmation from "./pages/schedules_pages/ConfirmationPg";
 import ScheduleList from "./pages/schedules_pages/ScheduleList";
 import SpecialCollectionHistory from "./pages/schedules_pages/CollectionHistory";
+import MonitorWasteLevel from "./pages/monitor_waste/MonitorWasteLevel";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -39,6 +40,8 @@ function App() {
               <Route path="/schedules/home" element={<Schedules />} />
               <Route path="/transactions/home" element={<Transactions />} />
               <Route path="/reports/home" element={<Reports />} />
+
+              <Route path="/monitorWaste" element={<MonitorWasteLevel />} />
 
               <Route path="/schedules/list" element={<ScheduleList />} />
               <Route path="/schedules/conf" element={<SpecialCollectionConfirmation />} />

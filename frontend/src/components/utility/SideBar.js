@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
-import { HomeIcon, BanknotesIcon, ArrowLeftStartOnRectangleIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, BanknotesIcon, ArrowLeftStartOnRectangleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { TbReportAnalytics } from "react-icons/tb";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { GrUserWorker } from "react-icons/gr";
@@ -17,6 +17,7 @@ const Sidebar = () => {
         { name: "Home", path: "/dashboard", icon: HomeIcon },
         { name: "Customers", path: "/finances/home", icon: FiUsers },
         { name: "Collection", path: "/collection/home", icon: GrUserWorker },
+      { name: "Monitor Waste", path: "/monitorWaste", icon: MagnifyingGlassIcon },
         { name: "Schedules", path: "/schedules/home", icon: AiOutlineSchedule },
         { name: "Transactions", path: "/inventory/home", icon: BanknotesIcon },
         { name: "Reports", path: "/insights/marketprice", icon: TbReportAnalytics },
