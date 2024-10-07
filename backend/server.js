@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { mongoDBURL, PORT } from "./config.js";
 import binRoutes from "./routes/binRoutes.js";
 import mockBin from "./mockBin.js";
+import schedulesRoutes from "./routes/Schedules/ScheduleRoutes.js";
 
 const app = express();
 
@@ -28,4 +29,5 @@ mongoose
 
 app.use('/bin', binRoutes);
 app.use('/bin-simulation', mockBin);
+app.use('/schedule', schedulesRoutes);
 
