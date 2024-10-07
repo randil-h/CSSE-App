@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
+import { useLocation } from "react-router-dom";
 
 export default function SpecialCollectionHistory() {
     const [history, setHistory] = useState([]);
+    const [canceledSchedules, setCanceledSchedules] = useState([]);
+    const location = useLocation();
 
     // Fetch schedule history from the backend
     useEffect(() => {
@@ -12,12 +15,18 @@ export default function SpecialCollectionHistory() {
             .then(response => response.json())
             .then(data => {
                 const currentDate = new Date();
-                // Filter to only include schedules where the date has passed
                 const pastSchedules = data.filter(schedule => new Date(schedule.date) < currentDate);
                 setHistory(pastSchedules);
             })
             .catch(error => console.error('Error fetching history:', error));
     }, []);
+
+    // Get canceled schedules passed from ScheduleList
+    useEffect(() => {
+        if (location.state && location.state.canceledSchedules) {
+            setCanceledSchedules(location.state.canceledSchedules);
+        }
+    }, [location.state]);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -38,14 +47,39 @@ export default function SpecialCollectionHistory() {
                     <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">Special Collection History</h2>
 
                     {/* History List */}
+                    <h3 className="text-lg font-bold mb-4">Past Schedules</h3>
                     <ul className="space-y-2">
                         {history.map(item => (
                             <li key={item._id} className="p-4 border rounded-lg flex justify-between items-center">
                                 <div>
-                                    <strong>Date / Time:</strong> {new Date(item.date).toLocaleDateString()} {item.time} <br />
-                                    <strong>Status:</strong> <span className={`text-${item.status === 'Completed' ? 'green-500' : 'red-500'}`}>{item.status}</span>
+                                    <strong>Date / Time:</strong> {new Date(item.date).toLocaleDateString()} {item.time}
+                                    <br />
+                                    <strong>Status:</strong> <span className="text-green-500">Completed</span>
                                 </div>
-                                <button className="bg-green-500 text-white py-1 px-4 rounded-lg hover:bg-green-600">Review</button>
+
+                                <button
+                                    className="bg-green-500 text-white py-1 px-4 rounded-lg hover:bg-green-600">
+                                    Review
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+
+                    {/* Canceled Schedules List */}
+                    <h3 className="text-lg font-bold mt-6 mb-4">Canceled Schedules</h3>
+                    <ul className="space-y-2">
+                        {canceledSchedules.map(item => (
+                            <li key={item._id} className="p-4 border rounded-lg flex justify-between items-center">
+                                <div>
+                                    <strong>Date / Time:</strong> {new Date(item.date).toLocaleDateString()} {item.time}
+                                    <br />
+                                    <strong>Status:</strong> <span className="text-red-500">Canceled</span>
+                                </div>
+
+                                <button
+                                    className="bg-green-500 text-white py-1 px-4 rounded-lg hover:bg-green-600">
+                                    Review
+                                </button>
                             </li>
                         ))}
                     </ul>

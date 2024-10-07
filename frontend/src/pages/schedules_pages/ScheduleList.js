@@ -12,6 +12,7 @@ const breadcrumbItems = [
 export default function ScheduleList() {
     const [schedules, setSchedules] = useState([]);
     const navigate = useNavigate();
+    const [canceledSchedules, setCanceledSchedules] = useState([]);
 
     // Fetch schedules from backend on component mount
     useEffect(() => {
@@ -26,6 +27,20 @@ export default function ScheduleList() {
             .catch(error => console.error('Error fetching schedules:', error));
     }, []);
 
+// Handle cancel action
+    const handleCancel = (id) => {
+        const updatedSchedules = schedules.filter(schedule => schedule._id !== id);
+        const canceledSchedule = schedules.find(schedule => schedule._id === id);
+
+        if (canceledSchedule) {
+            // Update canceled schedules state
+            setCanceledSchedules([...canceledSchedules, canceledSchedule]);
+            // Update the displayed schedules to remove the canceled one
+            setSchedules(updatedSchedules);
+            // Navigate to history page with the updated canceled schedules
+            navigate('/schedules/history', { state: { canceledSchedules: [...canceledSchedules, canceledSchedule] } });
+        }
+    };
     // Static regular schedule data
     const regularSchedules = [
         { date: '11-08-24', time: '10:00 AM', status: 'In progress' },
@@ -76,15 +91,24 @@ export default function ScheduleList() {
                             </ul>
                         </div>
 
+
                         {/* Dynamic Special Collection Schedules */}
                         <div className="mb-6">
                             <h3 className="text-lg sm:text-xl font-bold">Special Collection Schedules</h3>
                             <ul className="space-y-2">
                                 {schedules.map(schedule => (
-                                    <li key={schedule._id} className="p-4 border rounded-lg text-sm sm:text-base">
-                                        <strong>Date / Time:</strong> {new Date(schedule.date).toLocaleDateString()} {schedule.time} <br />
-                                        <strong>Location:</strong> {schedule.location} <br />
-                                        <strong>Special Remarks:</strong> {schedule.specialRemarks}
+                                    <li key={schedule._id} className="p-4 border rounded-lg text-sm sm:text-base flex justify-between items-center">
+                                        <div>
+                                            <strong>Date / Time:</strong> {new Date(schedule.date).toLocaleDateString()} {schedule.time} <br />
+                                            <strong>Location:</strong> {schedule.location} <br />
+                                            <strong>Special Remarks:</strong> {schedule.specialRemarks}
+                                        </div>
+                                        <button
+                                            onClick={() => handleCancel(schedule._id)}
+                                            className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition duration-300"
+                                        >
+                                            Cancel
+                                        </button>
                                     </li>
                                 ))}
                             </ul>
