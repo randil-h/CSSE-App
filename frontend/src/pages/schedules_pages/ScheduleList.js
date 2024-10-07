@@ -65,9 +65,6 @@ export default function ScheduleList() {
             });
     };
 
-
-
-
     // Static regular schedule data
     const regularSchedules = [
         { date: '11-08-24', time: '10:00 AM', status: 'In progress' },

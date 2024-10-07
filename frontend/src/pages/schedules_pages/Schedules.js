@@ -8,7 +8,6 @@ import Breadcrumb from "../../components/utility/Breadcrumbs";
 const breadcrumbItems = [
     { name: 'Schedules', href: '/Schedules/home' },
 ];
-
 export default function Schedules() {
     const navigate = useNavigate();
 

@@ -32,7 +32,6 @@ export default function SpecialCollectionHistory() {
                 const pastSchedules = data.filter(schedule =>
                     new Date(schedule.date) < currentDate || schedule.status === 'Cancelled'
                 );
-
                 // Set the history state
                 setHistory(pastSchedules);
             })
