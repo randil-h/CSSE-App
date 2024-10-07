@@ -17,7 +17,7 @@ const Sidebar = () => {
         { name: "Home", path: "/dashboard", icon: HomeIcon },
         { name: "Customers", path: "/finances/home", icon: FiUsers },
         { name: "Collectors", path: "/crop/home", icon: GrUserWorker },
-        { name: "Schedules", path: "/employees/home", icon: AiOutlineSchedule },
+        { name: "Schedules", path: "/schedules/list", icon: AiOutlineSchedule },
         { name: "Transactions", path: "/inventory/home", icon: BanknotesIcon },
         { name: "Reports", path: "/insights/marketprice", icon: TbReportAnalytics },
     ];
