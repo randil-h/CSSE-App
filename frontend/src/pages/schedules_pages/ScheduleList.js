@@ -63,6 +63,7 @@ export default function ScheduleList() {
                 console.error('Error cancelling schedule:', error);
                 alert('An error occurred while cancelling the schedule. Please try again.');
             });
+
     };
 
     // Static regular schedule data

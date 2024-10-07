@@ -21,7 +21,6 @@ export default function Navbar() {
                     </Link>
                 </div>
 
-                {/*  visible on desktop, hidden on mobile */}
                 <div className="hidden lg:flex space-x-6">
                     <Link to="/" className="nav-item">
                         <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
@@ -38,18 +37,19 @@ export default function Navbar() {
                             Visit Us
                         </div>
                     </Link>
+                    <Link to="/dashboard" className="nav-item">
+                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
+                            Dashboard
+                        </div>
+                    </Link>
                 </div>
 
-                {/* Right side of the navbar */}
                 <div className="flex lg:flex-1 justify-end">
-                    {/* Login button - visible on desktop, hidden on mobile */}
                     <Link to="/login" className="hidden lg:block nav-item">
                         <div className="px-3 py-1 border border-lime-500 text-sm leading-4 font-medium rounded-full text-black transition-all duration-200 hover:bg-lime-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500">
                             Login
                         </div>
                     </Link>
-
-                    {/* Mobile menu button - visible on mobile, hidden on desktop */}
                     <button
                         type="button"
                         className="lg:hidden -m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -65,7 +65,6 @@ export default function Navbar() {
                 </div>
             </nav>
 
-            {/* Mobile menu */}
             {mobileMenuOpen && (
                 <div className="lg:hidden absolute top-full left-0 w-full bg-white shadow-md">
                     <div className="space-y-1 px-2 pb-3 pt-2">

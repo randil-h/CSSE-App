@@ -22,6 +22,8 @@ export default function SpecialCollectionConfirmation() {
                 <div className="sm:w-1/5 sticky top-0">
                     <SideBar />
                 </div>
+
+
                 {/* Main content */}
                 <div className="w-full sm:w-4/5 flex flex-col p-6 items-center text-center">
                     <BackButton />
