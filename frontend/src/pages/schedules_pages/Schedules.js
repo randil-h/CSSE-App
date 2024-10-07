@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import {useNavigate} from "react-router-dom";
 import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
@@ -9,20 +10,14 @@ const breadcrumbItems = [
 ];
 
 export default function Schedules() {
-    // State for schedules list and form inputs
-    const [schedules, setSchedules] = useState([]);
+    const navigate = useNavigate();
+
+    // State for form inputs
     const [wasteType, setWasteType] = useState('');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [location, setLocation] = useState('');
     const [specialRemarks, setSpecialRemarks] = useState('');
-
-    // Fetch schedules from backend on component mount
-    useEffect(() => {
-        fetch('http://localhost:5555/schedule')
-            .then(response => response.json())
-            .then(data => setSchedules(data));
-    }, []);
 
     // Function to handle adding a new schedule
     const handleSubmit = async (e) => {
@@ -36,11 +31,15 @@ export default function Schedules() {
         });
 
         if (response.ok) {
-            const newSchedule = await response.json();
-            setSchedules([...schedules, newSchedule]); // Update the list of schedules
+            console.log('Schedule added successfully');
         } else {
             console.error('Failed to add schedule');
         }
+    };
+
+    // Navigate to the schedule list page
+    const goToScheduleList = () => {
+        navigate("/schedules/list");
     };
 
     return (
@@ -117,20 +116,11 @@ export default function Schedules() {
                             </form>
                         </div>
 
-                        {/* List of schedules */}
+                        {/* Button to go to the schedule list page */}
                         <div className="p-4">
-                            <h2 className="text-xl font-bold mb-4">Schedules List</h2>
-                            <ul className="space-y-2">
-                                {schedules.map(schedule => (
-                                    <li key={schedule._id} className="p-2 border rounded">
-                                        <strong>Waste Type:</strong> {schedule.wasteType} <br />
-                                        <strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()} <br />
-                                        <strong>Time:</strong> {schedule.time} <br />
-                                        <strong>Location:</strong> {schedule.location} <br />
-                                        <strong>Special Remarks:</strong> {schedule.specialRemarks}
-                                    </li>
-                                ))}
-                            </ul>
+                            <button onClick={goToScheduleList} className="px-4 py-2 bg-green-600 text-white rounded">
+                                View Schedules
+                            </button>
                         </div>
                     </div>
                 </div>

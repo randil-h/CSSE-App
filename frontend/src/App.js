@@ -10,6 +10,7 @@ import Collectors from "./pages/collectors_pages/Collectors";
 import Schedules from "./pages/schedules_pages/Schedules";
 import Transactions from "./pages/transactions_pages/Transactions";
 import Reports from "./pages/reports_pages/Reports";
+import ScheduleList from "./pages/schedules_pages/ScheduleList";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -36,6 +37,9 @@ function App() {
               <Route path="/schedules/home" element={<Schedules />} />
               <Route path="/transactions/home" element={<Transactions />} />
               <Route path="/reports/home" element={<Reports />} />
+
+              <Route path="/schedules/list" element={<ScheduleList />} />
+
             </Routes>
         )}
       </div>
