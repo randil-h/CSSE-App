@@ -15,7 +15,7 @@ export default function Navbar() {
                 <div className="flex lg:flex-1">
                     <Link to="/" className="-m-1.5 p-1.5">
                         <span className="text-2xl font-bold flex flex-row">
-                            BINN.
+                            BINN La Den
                             <span className="font-light text-base">&trade;</span>
                         </span>
                     </Link>
@@ -29,7 +29,7 @@ export default function Navbar() {
                     </Link>
                     <Link to="/dashboard" className="nav-item">
                         <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-sky-200">
-                            Kunukanda
+                            Binn La Den
                         </div>
                     </Link>
                     <Link to="/tourism" className="nav-item">

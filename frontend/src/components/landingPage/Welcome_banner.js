@@ -6,22 +6,22 @@ export default function Welcome_banner() {
 
       {/* Background with blur */}
       <div
-        className="absolute inset-0 opacity-80 bg-black bg-cover bg-center filter blur-sm -z-10"
-        style={{ backgroundImage: "url('trash.jpg')" }}
+        className="absolute -inset-6 bg-cover bg-center filter blur-md -z-10"
+        style={{ backgroundImage: "url('bins.jpg')" }}
       ></div>
 
       {/* Content container */}
       <div className="relative z-10 flex flex-col items-center justify-center py-32 px-12 gap-3">
         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-          <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-white ring-1 ring-gray-400 hover:ring-sky-600">
-            Visit Binn for an unforgettable experience{' '}
+          <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-black ring-1 ring-gray-400 hover:ring-sky-600">
+            Visit BINN La Den for an unforgettable experience{' '}
             <Link to="/tourism" className="font-semibold text-sky-500">
               <span className="absolute inset-0" aria-hidden="true" />
               Visit Us <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
         </div>
-        <div className="text-6xl text-white font-semibold mb-4"><span className="text-sky-200">Binn</span> Collections</div>
+        <div className="text-6xl text-white font-semibold mb-4"><span className="text-sky-200">BINN</span> Collections</div>
         <p className="text-lg md:text-xl max-w-3xl text-white text-center mb-6">
           Nestled in Nikaweratiya, Sri Lanka, our multi-crop plantation offers an enticing variety of premium products, inviting you to savor the rich flavors of our land.
         </p>
