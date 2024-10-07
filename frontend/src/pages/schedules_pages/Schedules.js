@@ -31,6 +31,7 @@ export default function Schedules() {
                 body: JSON.stringify(scheduleData),
             });
 
+
             if (response.ok) {
                 console.log('Schedule added successfully');
                 // Navigate to confirmation page after successful submission

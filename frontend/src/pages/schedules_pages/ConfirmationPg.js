@@ -23,6 +23,7 @@ export default function SpecialCollectionConfirmation() {
                     <SideBar />
                 </div>
 
+
                 {/* Main content */}
                 <div className="w-full sm:w-4/5 flex flex-col p-6 items-center text-center">
                     <BackButton />

@@ -33,6 +33,7 @@ export default function SpecialCollectionHistory() {
                     new Date(schedule.date) < currentDate || schedule.status === 'Cancelled'
                 );
 
+
                 // Set the history state
                 setHistory(pastSchedules);
             })
