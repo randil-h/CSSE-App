@@ -9,10 +9,10 @@ import QRScanner from "../../components/collection/QRScanner";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const breadcrumbItems = [
-    { name: 'Schedules', href: '/schedules/home' },
+    { name: 'Collection', href: '/collection/home' },
 ];
 
-export default function Schedules() {
+export default function Collection() {
     const [isScannerOpen, setIsScannerOpen] = useState(false);
     const [binSummary, setBinSummary] = useState([]);
     const [loading, setLoading] = useState(true);
