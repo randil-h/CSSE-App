@@ -7,68 +7,55 @@ const app = express();
 
 app.use(cors());
 
+const collectors = Array.from({ length: 10 }, (_, index) => `Collector${index + 120}`);
+
 // Initialize bins with 65 entries
-let bins = Array.from({ length: 65 }, (_, index) => ({
-    _id: `bin_${index + 1}`,
+export let bins = Array.from({ length: 65 }, (_, index) => ({
     binID: `B${(index + 1).toString().padStart(3, '0')}`,
-    zone: `Zone ${String.fromCharCode(65 + (index % 6))}`, // Zones: A, B, C, D, E, F
-    collectorID: `Collector${Math.floor(Math.random() * 10) + 120}`, // Random collector IDs
-    collectionTime: Math.floor(Date.now() / 1000), // Unix timestamp for last collection
-    wasteLevel: Math.floor(Math.random() * 30), // Initial waste level between 0 and 30%
-    fillRate: Math.random() * 5 + 1, // Fill rate per interval (between 1% and 6% per minute)
+    zone: `Zone ${String.fromCharCode(65 + (index % 6))}`,
+    collectorID: collectors[index % collectors.length],
+    collectionTime: Math.floor(Date.now() / 1000),
+    wasteLevel: Math.floor(Math.random() * 30),
+    fillRate: Math.random() * 5 + 1,
 }));
 
 // Function to update waste levels over time and simulate emptying
-function updateWasteLevels() {
+export function updateWasteLevels() {
     bins = bins.map((bin) => {
         let newWasteLevel = bin.wasteLevel;
 
-        // Gradual increase in waste based on fill rate
         newWasteLevel += bin.fillRate;
 
-        // Cap waste level to 100%
         if (newWasteLevel > 100) {
             newWasteLevel = 100;
         }
 
         newWasteLevel = Math.round(newWasteLevel);
 
-        // Randomly empty the bin with a small probability or if it's full
-        const shouldEmptyBin = Math.random() < 0.05 || newWasteLevel === 100; // 5% chance to empty + full bin
+        const shouldEmptyBin = Math.random() < 0.05 || newWasteLevel === 100;
         if (shouldEmptyBin) {
             console.log(`Bin ${bin.binID} in ${bin.zone} is being emptied.`);
-            newWasteLevel = 0; // Empty the bin
+            newWasteLevel = 0;
         }
 
-        // Print log if waste level changes significantly
         if (bin.wasteLevel !== newWasteLevel) {
             console.log(
-                `Bin ${bin.binID} in ${bin.zone} changed from ${bin.wasteLevel}% to ${newWasteLevel}%`
+                //`Bin ${bin.binID} in ${bin.zone} changed from ${bin.wasteLevel}% to ${newWasteLevel}%`
             );
         }
 
-        // Update the bin's waste level and collection time
         return {
             ...bin,
             wasteLevel: newWasteLevel,
             collectionTime: shouldEmptyBin ? Math.floor(Date.now() / 1000) : bin.collectionTime
         };
     });
+
+    return bins;
 }
 
-// Update waste levels every 1 minute (60000 ms)
-setInterval(updateWasteLevels, 60000);
-
-// API Endpoint to get the bins data
 app.get('/bin-simulation', (req, res) => {
     res.json(bins);
 });
-
-// Start server if the module is the main entry point
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-    app.listen(PORT, () => {
-        console.log(`Garbage bin server running on http://localhost:${PORT}`);
-    });
-}
 
 export default app;
