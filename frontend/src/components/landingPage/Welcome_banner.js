@@ -15,7 +15,7 @@ export default function Welcome_banner() {
         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
           <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-black ring-1 ring-gray-400 hover:ring-sky-600">
             Visit BINN La Den for an unforgettable experience{' '}
-            <Link to="/tourism" className="font-semibold text-sky-500">
+            <Link to="/tourism" className="font-semibold text-sky-700">
               <span className="absolute inset-0" aria-hidden="true" />
               Visit Us <span aria-hidden="true">&rarr;</span>
             </Link>
