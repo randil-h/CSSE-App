@@ -45,5 +45,24 @@ router.delete('/:id', async (req, res) => {
         res.status(500).send(error);
     }
 });
+// PATCH route to update a schedule
+router.patch('/:id', async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    console.log(`Updating schedule ID: ${id}, with updates:`, updates); // Log incoming data
+
+    try {
+        const updatedSchedule = await Schedule.findByIdAndUpdate(id, updates, { new: true });
+        if (!updatedSchedule) {
+            return res.status(404).json({ message: 'Schedule not found' });
+        }
+        res.status(200).json(updatedSchedule);
+    } catch (error) {
+        console.error('Error updating schedule:', error); // Log error
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 export default router;

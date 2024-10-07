@@ -12,10 +12,12 @@ const breadcrumbItems = [
 export default function ScheduleList() {
     const [schedules, setSchedules] = useState([]);
     const navigate = useNavigate();
-    const [canceledSchedules, setCanceledSchedules] = useState([]);
 
-    // Fetch schedules from backend on component mount
     useEffect(() => {
+        fetchSchedules();
+    }, []); // Fetch schedules when the component mounts
+
+    const fetchSchedules = () => {
         fetch('http://localhost:5555/schedule')
             .then(response => {
                 if (!response.ok) {
@@ -23,24 +25,49 @@ export default function ScheduleList() {
                 }
                 return response.json();
             })
-            .then(data => setSchedules(data))
+            .then(data => {
+                // Filter out cancelled schedules
+                const activeSchedules = data.filter(schedule => schedule.status !== 'Cancelled');
+                setSchedules(activeSchedules);
+            })
             .catch(error => console.error('Error fetching schedules:', error));
-    }, []);
-
-// Handle cancel action
-    const handleCancel = (id) => {
-        const updatedSchedules = schedules.filter(schedule => schedule._id !== id);
-        const canceledSchedule = schedules.find(schedule => schedule._id === id);
-
-        if (canceledSchedule) {
-            // Update canceled schedules state
-            setCanceledSchedules([...canceledSchedules, canceledSchedule]);
-            // Update the displayed schedules to remove the canceled one
-            setSchedules(updatedSchedules);
-            // Navigate to history page with the updated canceled schedules
-            navigate('/schedules/history', { state: { canceledSchedules: [...canceledSchedules, canceledSchedule] } });
-        }
     };
+
+    const handleCancel = (id) => {
+        // PATCH request to update the status of the schedule
+        fetch(`http://localhost:5555/schedule/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: 'Cancelled' }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(updatedSchedule => {
+                console.log('Updated Schedule:', updatedSchedule);
+                setSchedules(prevSchedules =>
+                    prevSchedules.filter(schedule => schedule._id !== id)
+                );
+                navigate('/schedules/history', {
+                    state: {
+                        cancelledSchedule: updatedSchedule
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error cancelling schedule:', error);
+                alert('An error occurred while cancelling the schedule. Please try again.');
+            });
+    };
+
+
+
+
     // Static regular schedule data
     const regularSchedules = [
         { date: '11-08-24', time: '10:00 AM', status: 'In progress' },

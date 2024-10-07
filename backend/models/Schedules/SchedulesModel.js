@@ -19,7 +19,12 @@ const scheduleSchema = new mongoose.Schema({
     },
     specialRemarks: {
         type: String,
-    }
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'In progress', 'Cancelled', 'Completed'], // ensure 'Cancelled' is included
+        default: 'Pending',
+    },
 });
 
 const Schedule = mongoose.model('Schedule', scheduleSchema);
