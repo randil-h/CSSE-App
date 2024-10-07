@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useRef} from "react";
 import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
 import { useLocation } from "react-router-dom";
+import jsPDF from 'jspdf';
 
 export default function SpecialCollectionHistory() {
     const [history, setHistory] = useState([]);
     const location = useLocation();
+    const historyRef = useRef();
 
     useEffect(() => {
         fetchHistory();
@@ -38,6 +40,23 @@ export default function SpecialCollectionHistory() {
                 setHistory(pastSchedules);
             })
             .catch(error => console.error('Error fetching history:', error));
+    };
+
+    // Function to handle the PDF export
+    const handlePDFDownload = () => {
+        const doc = new jsPDF();
+
+        doc.text("Special Collection History", 10, 10);
+
+        history.forEach((item, index) => {
+            const date = new Date(item.date).toLocaleDateString();
+            const status = item.status === 'Cancelled' ? "Cancelled" : "Completed";
+            doc.text(`Schedule ${index + 1}:`, 10, 20 + index * 10);
+            doc.text(`Date/Time: ${date} ${item.time}`, 10, 25 + index * 10);
+            doc.text(`Status: ${status}`, 10, 30 + index * 10);
+        });
+
+        doc.save('special-collection-history.pdf');
     };
 
     return (
@@ -78,6 +97,7 @@ export default function SpecialCollectionHistory() {
                     {/* Export Button */}
                     <div className="text-right mt-6">
                         <button
+                            onClick={handlePDFDownload}
                             className="bg-gray-300 py-2 px-6 rounded-full text-sm hover:bg-gray-400 transition duration-300">
                             Save as PDF
                         </button>
