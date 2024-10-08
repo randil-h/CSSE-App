@@ -1,50 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import QrScanner from "react-qr-scanner";
 import axios from "axios";
+import { Camera, AlertCircle } from "lucide-react";
 
-const QRScanner = () => {
+const QRScanner = ({ selectedCamera, onScan }) => {
     const [scanResult, setScanResult] = useState(null);
     const [binData, setBinData] = useState(null);
     const [error, setError] = useState("");
-    const [hasBackCamera, setHasBackCamera] = useState(false);
-    const [stream, setStream] = useState(null);
-
-    useEffect(() => {
-        checkForBackCamera();
-        return () => {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-        };
-    }, []);
-
-    const checkForBackCamera = async () => {
-        try {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const backCamera = devices.find(device =>
-                device.kind === 'videoinput' && device.label.toLowerCase().includes('back')
-            );
-            setHasBackCamera(!!backCamera);
-            if (backCamera) {
-                const newStream = await navigator.mediaDevices.getUserMedia({
-                    video: { deviceId: backCamera.deviceId }
-                });
-                setStream(newStream);
-            }
-        } catch (err) {
-            console.error("Error accessing camera:", err);
-            setError("Error accessing camera. Please ensure you've granted camera permissions.");
-        }
-    };
 
     const handleScan = async (data) => {
         if (data) {
-            console.log("Scanned Data (Bin ID):", data);
+            console.log("Scanned Data:", data);
             setScanResult(data);
-
             try {
                 const response = await axios.get(`http://localhost:5000/bin/${data}`);
                 setBinData(response.data);
+                onScan(data);
             } catch (err) {
                 setError("Error fetching bin information");
                 console.error("Axios Error:", err.response ? err.response.data : err.message);
@@ -57,36 +28,54 @@ const QRScanner = () => {
         setError("Error scanning the QR code");
     };
 
-    const previewStyle = {
-        height: 300,
-        width: 300,
-    };
-
-    if (!hasBackCamera) {
-        return <div>This device does not have a back camera. Please use a device with a back camera.</div>;
-    }
-
     return (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <h2>Scan Bin's QR Code</h2>
-            {stream && (
-                <QrScanner
-                    delay={300}
-                    onError={handleError}
-                    onScan={handleScan}
-                    style={previewStyle}
-                    constraints={{ video: { facingMode: "environment" } }}
-                />
+        <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+                <Camera className="inline-block mr-2 mb-1" />
+                Scan Bin's QR Code
+            </h2>
+            {selectedCamera && (
+                <div className="relative">
+                    <QrScanner
+                        delay={300}
+                        onError={handleError}
+                        onScan={handleScan}
+                        className="w-full h-64 rounded-lg overflow-hidden"
+                        constraints={{
+                            video: {
+                                deviceId: selectedCamera,
+                                facingMode: "environment"
+                            }
+                        }}
+                    />
+                    <div className="absolute inset-0 border-2 border-blue-500 rounded-lg pointer-events-none"></div>
+                </div>
             )}
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && (
+                <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md flex items-center">
+                    <AlertCircle className="mr-2" />
+                    <p>{error}</p>
+                </div>
+            )}
             {binData && (
-                <div style={{ marginTop: "20px" }}>
-                    <h3>Bin Information</h3>
-                    <p><strong>Bin ID:</strong> {binData.binID}</p>
-                    <p><strong>Zone:</strong> {binData.zone}</p>
-                    <p><strong>Waste Level:</strong> {binData.wasteLevel}%</p>
-                    <p><strong>Collection Time:</strong> {new Date(binData.collectionTime).toLocaleString()}</p>
-                    <p><strong>Last Collected By:</strong> {binData.collectorID}</p>
+                <div className="mt-6 bg-gray-100 p-4 rounded-md">
+                    <h3 className="text-xl font-semibold mb-3 text-gray-800">Bin Information</h3>
+                    <div className="space-y-2">
+                        <p><span className="font-medium">Bin ID:</span> {binData.binID}</p>
+                        <p><span className="font-medium">Zone:</span> {binData.zone}</p>
+                        <p><span className="font-medium">Collector ID:</span> {binData.collectorID}</p>
+                        <p><span className="font-medium">Last Collection:</span> {new Date(binData.collectionTime * 1000).toLocaleString()}</p>
+                        <div className="flex items-center">
+                            <span className="font-medium mr-2">Waste Level:</span>
+                            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                <div
+                                    className="bg-green-600 h-2.5 rounded-full"
+                                    style={{width: `${binData.wasteLevel}%`}}
+                                ></div>
+                            </div>
+                            <span className="ml-2">{binData.wasteLevel}%</span>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
