@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import { mongoDBURL, PORT } from "./config.js";
-import binRoutes from "./routes/binRoutes.js";
+import binRoutes from "./routes/CollectionRoutes/BinRoutes.js";
 import mockBin, { bins as mockBins, updateWasteLevels } from "./mockBin.js";
 import schedulesRoutes from "./routes/Schedules/ScheduleRoutes.js";
-import Bin from "./models/bin.js";
+import Bin from "./models/Collection/bin.js";
 
 const app = express();
 

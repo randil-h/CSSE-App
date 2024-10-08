@@ -1,5 +1,5 @@
 import express from 'express';
-import Bin from '../models/bin.js';
+import Bin from '../../models/Collection/bin.js';
 
 const router = express.Router();
 
