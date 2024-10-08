@@ -4,12 +4,19 @@ import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
 import { useLocation } from "react-router-dom";
 import jsPDF from 'jspdf';
+import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconSolid } from '@heroicons/react/24/solid';
+import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconOutline } from '@heroicons/react/24/outline';
+
+import Modal from "../../components/schedules/Model";
 
 export default function SpecialCollectionHistory() {
     const [history, setHistory] = useState([]);
     const location = useLocation();
     const historyRef = useRef();
-
+    const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null); // State for selected item
+    const [selectedSchedule, setSelectedSchedule] = useState(null);
     useEffect(() => {
         fetchHistory();
     }, []);
@@ -21,6 +28,10 @@ export default function SpecialCollectionHistory() {
         }
     }, [location.state]);
 
+    const toggleSidebar = () => {
+        setIsSidebarVisible(!isSidebarVisible);
+    };
+
     const fetchHistory = () => {
         fetch('http://localhost:5555/schedule')
             .then(response => {
@@ -31,16 +42,22 @@ export default function SpecialCollectionHistory() {
             })
             .then(data => {
                 const currentDate = new Date();
-                const pastSchedules = data.filter(schedule =>
-                    new Date(schedule.date) < currentDate || schedule.status === 'Cancelled'
-                );
-
+                const pastSchedules = data.map(schedule => {
+                    const scheduleDate = new Date(schedule.date);
+                    // Check if the schedule date is in the past
+                    if (scheduleDate < currentDate) {
+                        return { ...schedule, status: 'Completed' }; // Set status to 'Completed'
+                    }
+                    return schedule; // Leave status as is for future schedules
+                }).filter(schedule => schedule.status === 'Cancelled' || new Date(schedule.date) < currentDate);
 
                 // Set the history state
                 setHistory(pastSchedules);
             })
             .catch(error => console.error('Error fetching history:', error));
     };
+
+
 
     // Function to handle the PDF export
     const handlePDFDownload = () => {
@@ -59,51 +76,90 @@ export default function SpecialCollectionHistory() {
         doc.save('special-collection-history.pdf');
     };
 
+    // Function to handle the review button click
+    const handleReviewClick = (item) => {
+        setSelectedItem(item); // Set the selected item
+        setIsModalOpen(true); // Open the modal
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedItem(null); // Clear selected item
+    };
+
     return (
-        <div className="min-h-screen flex flex-col">
-            {/* Navbar */}
+        <div className="min-h-screen flex flex-col bg-neutral-100">
             <div className="sticky top-0 z-10">
                 <Navbar />
+                <div className="bg-gray-100 w-full h-12 flex items-center justify-between px-4">
+                    <div className="text-gray-700 font-semibold"></div>
+                    <button
+                        onClick={toggleSidebar}
+                        className="flex items-center justify-center text-black p-4 rounded-full transition"
+                        aria-label="Toggle Sidebar"
+                    >
+                        {isSidebarVisible ? (
+                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6" />
+                        ) : (
+                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6" />
+                        )}
+                    </button>
+                </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:space-x-4">
-                {/* Sidebar */}
-                <div className="sm:w-1/5 sticky top-0">
-                    <SideBar />
-                </div>
+            <div className="flex flex-1">
+                {isSidebarVisible && (
+                    <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/5 h-full bg-gray-100 shadow-lg z-40">
+                        <SideBar />
+                    </div>
+                )}
 
-                {/* Main content */}
-                <div className="w-full sm:w-4/5 flex flex-col p-4">
-                    <BackButton />
-                    <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">Special Collection History</h2>
+                <div className={`flex-grow transition-all duration-300 ease-in-out p-4 ${isSidebarVisible ? 'ml-0 sm:ml-64' : 'ml-0'}`}>
+                    <div className="w-full max-w-3xl mx-auto">
+                        <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">Special Collection History</h2>
+                        <h3 className="text-lg font-bold mb-4">Past Schedules</h3>
+                        <ul className="space-y-2">
+                            {history.map((item) => (
+                                <li key={item._id}
+                                    className="p-4 border rounded-lg flex justify-between items-center bg-white shadow hover:shadow-md transition-shadow duration-300">
+                                    <div className="flex flex-col text-left">
+                <span>
+                    <strong>Date:</strong> {new Date(item.date).toLocaleDateString()}
+                </span>
+                                        <span>
 
-                    {/* History List */}
-                    <h3 className="text-lg font-bold mb-4">Past Schedules</h3>
-                    <ul className="space-y-2">
-                        {history.map(item => (
-                            <li key={item._id} className="p-4 border rounded-lg flex justify-between items-center">
-                                <div>
-                                    <strong>Date / Time:</strong> {new Date(item.date).toLocaleDateString()} {item.time}
-                                    <br />
-                                    <strong>Status:</strong> <span className={item.status === 'Cancelled' ? "text-red-500" : "text-green-500"}>{item.status || 'Completed'}</span>
-                                </div>
-                                <button className="bg-green-500 text-white py-1 px-4 rounded-lg hover:bg-green-600">
-                                    Review
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
+                    <strong>Status:</strong>
+                    <span className={item.status === "Cancelled" ? "text-red-500" : "text-green-500"}>
+                        {" "} {/* Adding space here */}
+                        {item.status || "Completed"}
+                    </span>
+                </span>
+                                    </div>
+                                    <button
+                                        onClick={() => handleReviewClick(item)}
+                                        className="bg-green-500 text-white py-1 px-4 rounded-lg hover:bg-green-600 transition duration-300"
+                                    >
+                                        Review
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
 
-                    {/* Export Button */}
-                    <div className="text-right mt-6">
-                        <button
-                            onClick={handlePDFDownload}
-                            className="bg-gray-300 py-2 px-6 rounded-full text-sm hover:bg-gray-400 transition duration-300">
-                            Save as PDF
-                        </button>
+
+                        <div className="text-right mt-6">
+                            <button
+                                onClick={handlePDFDownload}
+                                className="bg-black py-2 px-6 rounded-full text-sm hover:bg-gray-400 transition duration-300 text-white"
+                            >
+                                Download Details
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {/* Modal for viewing schedule details */}
+            <Modal isOpen={isModalOpen} onClose={closeModal} item={selectedItem}/>
         </div>
     );
 }
