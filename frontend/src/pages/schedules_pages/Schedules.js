@@ -4,6 +4,8 @@ import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
 import Breadcrumb from "../../components/utility/Breadcrumbs";
+import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconSolid } from '@heroicons/react/24/solid';
+import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconOutline } from '@heroicons/react/24/outline';
 
 const breadcrumbItems = [
     { name: 'Schedules', href: '/Schedules/home' },
@@ -19,6 +21,7 @@ const wasteTypes = [
 ];
 export default function Schedules() {
     const navigate = useNavigate();
+    const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
     // State for form inputs
     const [wasteType, setWasteType] = useState('');
@@ -56,29 +59,56 @@ export default function Schedules() {
     const goToScheduleList = () => {
         navigate("/schedules/list");
     };
+    const toggleSidebar = () => {
+        setIsSidebarVisible(!isSidebarVisible);
+    };
+
     const goToConfirmation = () => {
         navigate("/schedules/conf");
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col bg-neutral-100">
             {/* Navbar */}
             <div className="sticky top-0 z-10">
                 <Navbar />
-            </div>
-            <div className="flex flex-col sm:flex-row sm:space-x-4">
-                {/* Sidebar */}
-                <div className="sm:w-1/5 sticky top-0">
-                    <SideBar />
+                <div className="bg-green-200 w-full h-12 flex items-center justify-between px-4">
+                    <div className="text-gray-700 font-semibold">Book a collection slot</div>
+                    <button
+                        onClick={toggleSidebar}
+                        className="flex items-center justify-center text-black p-2 rounded-full transition"
+                        aria-label="Toggle Sidebar"
+                    >
+                        {isSidebarVisible ? (
+                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6" />
+                        ) : (
+                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6" />
+                        )}
+                    </button>
                 </div>
-                {/* Main content */}
-                <div className="w-full sm:w-4/5 flex flex-col p-4">
-                    <div className="flex items-center space-x-4 mb-6">
-                        <BackButton />
-                        <Breadcrumb items={breadcrumbItems} />
+            </div>
+
+            {/* Main Content */}
+            <div className="flex flex-1 relative">
+                {/* Sidebar */}
+                {isSidebarVisible && (
+                    <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/5 h-full bg-gray-100 shadow-lg z-40">
+
+                        <SideBar/>
                     </div>
+                )}
+
+                {/* Main content */}
+                <div
+                    className={`flex-1 p-4 transition-all duration-300 ease-in-out ${isSidebarVisible ? "lg:ml-64" : ""}`}>
+
+                    <div className="w-full h-auto">
+                        <BackButton/>
+                        <Breadcrumb items={breadcrumbItems}/>
+                    </div>
+
                     {/* Form to add new schedule */}
-                    <div className="p-6 bg-white shadow rounded-lg ">
+                    <div className="p-6 bg-white shadow rounded-lg">
                         <h2 className="text-xl font-bold mb-4 text-center sm:text-left">Add a New Special Collection Schedule</h2>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Waste Type Selection */}
@@ -98,6 +128,7 @@ export default function Schedules() {
                                     ))}
                                 </div>
                             </div>
+
                             {/* Date Input */}
                             <div>
                                 <label className="block text-sm font-medium mb-2 text-left">Date</label>
@@ -109,6 +140,7 @@ export default function Schedules() {
                                     required
                                 />
                             </div>
+
                             {/* Time Slot Selection */}
                             <div>
                                 <label className="block text-sm font-medium mb-2 text-left">Time</label>
@@ -127,6 +159,7 @@ export default function Schedules() {
                                     <option value="18:00 - 20:00">18:00 - 20:00</option>
                                 </select>
                             </div>
+
                             {/* Location Input */}
                             <div>
                                 <label className="block text-sm font-medium mb-2 text-left">Location</label>
@@ -138,6 +171,7 @@ export default function Schedules() {
                                     required
                                 />
                             </div>
+
                             {/* Special Remarks Input */}
                             <div>
                                 <label className="block text-sm font-medium mb-2 text-left">Special Remarks (Optional)</label>
@@ -148,14 +182,19 @@ export default function Schedules() {
                                     className="block w-full p-2 border rounded"
                                 />
                             </div>
+
                             <button type="submit" className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-300">
                                 Add Schedule
                             </button>
                         </form>
                     </div>
+
                     {/* Button to go to the schedule list page */}
                     <div className="text-center sm:text-left mt-6">
-                        <button onClick={goToScheduleList} className="py-2 px-6 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300">
+                        <button
+                            onClick={goToScheduleList}
+                            className="py-2 px-6 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300"
+                        >
                             View Schedules
                         </button>
                     </div>
