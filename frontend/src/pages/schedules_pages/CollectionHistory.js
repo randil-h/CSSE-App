@@ -97,7 +97,6 @@ export default function SpecialCollectionHistory() {
                 {/* Main content */}
                 <div className={`flex-grow transition-all duration-300 ease-in-out p-4 ${isSidebarVisible ? 'ml-0 sm:ml-64' : 'ml-0'}`}>
                     <div className="w-full max-w-3xl mx-auto">
-                        <BackButton />
                         <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">Special Collection History</h2>
 
                         <h3 className="text-lg font-bold mb-4">Past Schedules</h3>
