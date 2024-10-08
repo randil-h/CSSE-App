@@ -93,110 +93,105 @@ export default function Schedules() {
                 {/* Sidebar */}
                 {isSidebarVisible && (
                     <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/5 h-full bg-gray-100 shadow-lg z-40">
-
-                        <SideBar/>
+                        <SideBar />
                     </div>
                 )}
 
                 {/* Main content */}
-                <div
-                    className={`flex-1 p-4 transition-all duration-300 ease-in-out ${isSidebarVisible ? "lg:ml-64" : ""}`}>
+                <div className={`flex-1 p-4 transition-all duration-300 ease-in-out ${isSidebarVisible ? "lg:ml-64" : ""}`}>
+                    <div className="container mx-auto max-w-4xl">
+                        <BackButton />
+                        <Breadcrumb items={breadcrumbItems} />
 
-                    <div className="w-full h-auto">
-                        <BackButton/>
-                        <Breadcrumb items={breadcrumbItems}/>
-                    </div>
-
-                    {/* Form to add new schedule */}
-                    <div className="p-6 bg-white shadow rounded-lg">
-                        <h2 className="text-xl font-bold mb-4 text-center sm:text-left">Add a New Special Collection Schedule</h2>
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Waste Type Selection */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2 text-left">Waste Type</label>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    {wasteTypes.map((type) => (
-                                        <div
-                                            key={type}
-                                            onClick={() => setWasteType(type)}
-                                            className={`p-4 border rounded-lg cursor-pointer transition duration-300 ${
-                                                wasteType === type ? 'bg-green-500 text-white' : 'bg-white'
-                                            } hover:bg-green-300`}
-                                        >
-                                            {type}
-                                        </div>
-                                    ))}
+                        {/* Form to add new schedule */}
+                        <div className="p-6 bg-white shadow rounded-lg mt-6">
+                            <h2 className="text-2xl font-bold mb-4 text-center sm:text-left">Add a New Special Collection Schedule</h2>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Waste Type Selection */}
+                                <div>
+                                    <label className="block text-sm font-medium mb-2 text-left">Waste Type</label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        {wasteTypes.map((type) => (
+                                            <div
+                                                key={type}
+                                                onClick={() => setWasteType(type)}
+                                                className={`p-4 border rounded-lg cursor-pointer transition duration-300 ${wasteType === type ? 'bg-green-500 text-white' : 'bg-white'} hover:bg-green-300`}
+                                            >
+                                                {type}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Date Input */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2 text-left">Date</label>
-                                <input
-                                    type="date"
-                                    value={date}
-                                    onChange={(e) => setDate(e.target.value)}
-                                    className="block w-full p-2 border rounded"
-                                    required
-                                />
-                            </div>
+                                {/* Date Input */}
+                                <div>
+                                    <label className="block text-sm font-medium mb-2 text-left">Date</label>
+                                    <input
+                                        type="date"
+                                        value={date}
+                                        onChange={(e) => setDate(e.target.value)}
+                                        className="block w-full p-2 border rounded"
+                                        required
+                                    />
+                                </div>
 
-                            {/* Time Slot Selection */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2 text-left">Time</label>
-                                <select
-                                    value={time}
-                                    onChange={(e) => setTime(e.target.value)}
-                                    className="block w-full p-2 border rounded"
-                                    required
-                                >
-                                    <option value="" disabled>Select a time slot</option>
-                                    <option value="08:00 - 10:00">08:00 - 10:00</option>
-                                    <option value="10:00 - 12:00">10:00 - 12:00</option>
-                                    <option value="12:00 - 14:00">12:00 - 14:00</option>
-                                    <option value="14:00 - 16:00">14:00 - 16:00</option>
-                                    <option value="16:00 - 18:00">16:00 - 18:00</option>
-                                    <option value="18:00 - 20:00">18:00 - 20:00</option>
-                                </select>
-                            </div>
+                                {/* Time Slot Selection */}
+                                <div>
+                                    <label className="block text-sm font-medium mb-2 text-left">Time</label>
+                                    <select
+                                        value={time}
+                                        onChange={(e) => setTime(e.target.value)}
+                                        className="block w-full p-2 border rounded"
+                                        required
+                                    >
+                                        <option value="" disabled>Select a time slot</option>
+                                        <option value="08:00 - 10:00">08:00 - 10:00</option>
+                                        <option value="10:00 - 12:00">10:00 - 12:00</option>
+                                        <option value="12:00 - 14:00">12:00 - 14:00</option>
+                                        <option value="14:00 - 16:00">14:00 - 16:00</option>
+                                        <option value="16:00 - 18:00">16:00 - 18:00</option>
+                                        <option value="18:00 - 20:00">18:00 - 20:00</option>
+                                    </select>
+                                </div>
 
-                            {/* Location Input */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2 text-left">Location</label>
-                                <input
-                                    type="text"
-                                    value={location}
-                                    onChange={(e) => setLocation(e.target.value)}
-                                    className="block w-full p-2 border rounded"
-                                    required
-                                />
-                            </div>
+                                {/* Location Input */}
+                                <div>
+                                    <label className="block text-sm font-medium mb-2 text-left">Location</label>
+                                    <input
+                                        type="text"
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                        className="block w-full p-2 border rounded"
+                                        required
+                                    />
+                                </div>
 
-                            {/* Special Remarks Input */}
-                            <div>
-                                <label className="block text-sm font-medium mb-2 text-left">Special Remarks (Optional)</label>
-                                <input
-                                    type="text"
-                                    value={specialRemarks}
-                                    onChange={(e) => setSpecialRemarks(e.target.value)}
-                                    className="block w-full p-2 border rounded"
-                                />
-                            </div>
+                                {/* Special Remarks Input */}
+                                <div>
+                                    <label className="block text-sm font-medium mb-2 text-left">Special Remarks (Optional)</label>
+                                    <input
+                                        type="text"
+                                        value={specialRemarks}
+                                        onChange={(e) => setSpecialRemarks(e.target.value)}
+                                        className="block w-full p-2 border rounded"
+                                    />
+                                </div>
 
-                            <button type="submit" className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-300">
-                                Add Schedule
+                                <button type="submit" className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-300">
+                                    Add Schedule
+                                </button>
+                            </form>
+                        </div>
+
+                        {/* Button to go to the schedule list page */}
+                        <div className="text-center sm:text-left mt-6">
+                            <button
+                                onClick={goToScheduleList}
+                                className="py-2 px-6 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300"
+                            >
+                                View Schedules
                             </button>
-                        </form>
-                    </div>
-
-                    {/* Button to go to the schedule list page */}
-                    <div className="text-center sm:text-left mt-6">
-                        <button
-                            onClick={goToScheduleList}
-                            className="py-2 px-6 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300"
-                        >
-                            View Schedules
-                        </button>
+                        </div>
                     </div>
                 </div>
             </div>

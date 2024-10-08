@@ -106,7 +106,7 @@ export default function ScheduleList() {
             <div className="flex flex-1 relative">
                 {/* Sidebar */}
                 {isSidebarVisible && (
-                    <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/5 h-full bg-gray-100 shadow-lg z-40">
+                    <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/6 h-full bg-gray-100 shadow-lg z-40">
 
                         <SideBar/>
                     </div>
