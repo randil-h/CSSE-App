@@ -14,6 +14,7 @@ import SpecialCollectionConfirmation from "./pages/schedules_pages/ConfirmationP
 import ScheduleList from "./pages/schedules_pages/ScheduleList";
 import SpecialCollectionHistory from "./pages/schedules_pages/CollectionHistory";
 import MonitorWasteLevel from "./pages/monitor_waste/MonitorWasteLevel";
+import QRPage from "./pages/collection_pages/QRCode";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -36,7 +37,10 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
 
               <Route path="/customers/home" element={<Customers />} />
-              <Route path="/collection/home" element={<Collection />} />
+
+              <Route path="/collection" element={<Collection />} />
+              <Route path="/collection/qr-scanner" element={<QRPage />} />
+
               <Route path="/schedules/home" element={<Schedules />} />
               <Route path="/transactions/home" element={<Transactions />} />
               <Route path="/reports/home" element={<Reports />} />

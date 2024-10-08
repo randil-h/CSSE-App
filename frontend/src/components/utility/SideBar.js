@@ -16,7 +16,7 @@ const Sidebar = () => {
     const Menus = [
         { name: "Home", path: "/dashboard", icon: HomeIcon },
         { name: "Customers", path: "/finances/home", icon: FiUsers },
-        { name: "Collection", path: "/collection/home", icon: GrUserWorker },
+        { name: "Collection", path: "/collection", icon: GrUserWorker },
       { name: "Monitor Waste", path: "/monitorWaste", icon: MagnifyingGlassIcon },
         { name: "Schedules", path: "/schedules/home", icon: AiOutlineSchedule },
         { name: "Transactions", path: "/inventory/home", icon: BanknotesIcon },

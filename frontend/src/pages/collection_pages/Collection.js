@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom"; // Import Link
 import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
 import Breadcrumb from "../../components/utility/Breadcrumbs";
 import { MdQrCodeScanner } from 'react-icons/md';
 import QRScanner from "../../components/collection/QRScanner";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import BinChart from "../../components/collection/BinChart";
+
 
 const breadcrumbItems = [
-    { name: 'Collection', href: '/collection/home' },
+    { name: 'Collection', href: '/collection/' },
 ];
 
 export default function Collection() {
@@ -17,10 +19,6 @@ export default function Collection() {
     const [binSummary, setBinSummary] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const handleScanClick = () => {
-        setIsScannerOpen(!isScannerOpen);
-    };
 
     useEffect(() => {
         const fetchBinData = async () => {
@@ -74,13 +72,14 @@ export default function Collection() {
                             <Breadcrumb items={breadcrumbItems} />
                         </div>
                         <div className="flex justify-start">
-                            <button
-                                className="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md focus:outline-none"
-                                onClick={handleScanClick}
-                            >
-                                <MdQrCodeScanner className="mr-2" size={20} />
-                                <span className="text-sm sm:text-base">Scan QR</span>
-                            </button>
+                            <Link to="/collection/qr-scanner">
+                                <button
+                                    className="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md focus:outline-none"
+                                >
+                                    <MdQrCodeScanner className="mr-2" size={20} />
+                                    <span className="text-sm sm:text-base">Scan QR</span>
+                                </button>
+                            </Link>
                         </div>
                     </div>
 
@@ -95,19 +94,7 @@ export default function Collection() {
                     ) : error ? (
                         <div className="text-center text-red-500 mt-4">{error}</div>
                     ) : (
-                        <div className="mt-6">
-                            <h3 className="text-lg font-semibold mb-4">Number of bins that are more than 75% full</h3>
-                            <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={binSummary}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="zone" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="binCount" fill="#8884d8" />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
+                        <BinChart binSummary={binSummary} />
                     )}
                 </div>
             </div>

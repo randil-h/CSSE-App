@@ -52,7 +52,6 @@ mongoose
             console.log(`App is listening on port: ${PORT}`);
         });
 
-        // Set up periodic updates every 1 minute
         setInterval(updateBinsInDatabase, 60000);
     })
     .catch((error) => {
