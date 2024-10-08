@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
@@ -15,16 +15,50 @@ export default function MonitorWasteLevel() {
   // State for sidebar visibility
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
-  // Dummy data for bins (this would normally come from your backend)
-  const binsData = [
-    { id: 1, type: "Organic Bin", filledPercentage: 45 },
-    { id: 2, type: "Non-Organic Bin", filledPercentage: 65 },
-    { id: 3, type: "Recycling Bin", filledPercentage: 90 },
-  ];
+  // State for bins and zones
+  const [binsData, setBinsData] = useState([]);
+  const [zones, setZones] = useState([]);
+  const [selectedZone, setSelectedZone] = useState("All Zones");
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
+
+  // Fetch bins data from the backend on component mount
+  useEffect(() => {
+    const fetchBins = async () => {
+      const response = await fetch('http://localhost:5555/bin');
+      const data = await response.json();
+      setBinsData(data);
+
+      // Get unique zones
+      const uniqueZones = [...new Set(data.map(bin => bin.zone))];
+      setZones(["All Zones", ...uniqueZones]); // Add "All Zones" option
+    };
+
+    fetchBins();
+  }, []);
+
+  // Calculate average fill rate for each zone
+  const calculateAverageFillRates = () => {
+    const zoneFillRates = {};
+
+    binsData.forEach((bin) => {
+      const { zone, wasteLevel } = bin;
+      if (!zoneFillRates[zone]) {
+        zoneFillRates[zone] = { total: 0, count: 0 };
+      }
+      zoneFillRates[zone].total += wasteLevel;
+      zoneFillRates[zone].count += 1;
+    });
+
+    return Object.entries(zoneFillRates).map(([zone, { total, count }]) => ({
+      zone,
+      averageFillRate: total / count,
+    }));
+  };
+
+  const averageFillRates = calculateAverageFillRates();
 
   return (
     <div className="min-h-screen flex flex-col bg-neutral-100">
@@ -53,23 +87,38 @@ export default function MonitorWasteLevel() {
         {/* Main content */}
         <div className={`flex-1 p-4 transition-all duration-300 ease-in-out`}>
           <div className="w-full h-auto">
-            {/* Dynamically display bins */}
+            {/* Dropdown for selecting zone */}
+            <div className="mb-4">
+              <label htmlFor="zone-dropdown" className="block mb-2">Select Zone:</label>
+              <select
+                id="zone-dropdown"
+                value={selectedZone}
+                onChange={(e) => setSelectedZone(e.target.value)}
+                className="border rounded px-2 py-1"
+              >
+                {zones.map((zone, index) => (
+                  <option key={index} value={zone}>{zone}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Dynamically display average fill rates per zone */}
             <div className="grid grid-cols-1 gap-4">
-              {binsData.map((bin) => (
+              {averageFillRates.map(({ zone, averageFillRate }) => (
                 <div
-                  key={bin.id}
+                  key={zone}
                   className="relative px-4 py-24 rounded-3xl shadow-md bg-sky-100"
                 >
-                  {/* Indicator circle with gradient */}
+                  {/* Indicator circle with gradient based on average fill rate */}
                   <div
                     className="absolute top-3 right-3 size-14 rounded-full flex items-center justify-center text-black font-bold"
                     style={{
-                      background: getBinGradient(bin.filledPercentage),
+                      background: getBinGradient(averageFillRate), // Use average fill rate here
                     }}
                   >
-                    {bin.filledPercentage}%
+                    {averageFillRate.toFixed(2)}%
                   </div>
-                  <h3 className="text-start font-bold">{bin.type}</h3>
+                  <h3 className="text-start font-bold">{zone}</h3>
                 </div>
               ))}
             </div>
