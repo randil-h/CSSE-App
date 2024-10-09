@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
+    "d3": "^7.9.0",
     "jspdf": "^2.5.2",
     "leaflet": "^1.9.4",
     "leaflet.heat": "^0.2.0",

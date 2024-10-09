@@ -6,6 +6,7 @@ import binRoutes from "./routes/CollectionRoutes/BinRoutes.js";
 import mockBin, { bins as mockBins, updateWasteLevels } from "./mockBin.js";
 import schedulesRoutes from "./routes/Schedules/ScheduleRoutes.js";
 import Bin from "./models/Collection/bin.js";
+import trackingDeviceRoutes from "./routes/TrackingDeviceRoute/TrackingDeviceRoutes.js";
 
 const app = express();
 
@@ -58,5 +59,6 @@ mongoose
 app.use('/bin', binRoutes);
 app.use('/bin_simulation', mockBin);
 app.use('/schedule', schedulesRoutes);
+app.use('/device', trackingDeviceRoutes);
 
 export default app;
