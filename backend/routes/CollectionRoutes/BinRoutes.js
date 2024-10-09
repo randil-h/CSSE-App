@@ -59,27 +59,52 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { binID, zone, collectorID, collectionTime, wasteLevel } = req.body;
+    const updateData = req.body;
 
-    if (!binID || !zone || !collectorID || !collectionTime || wasteLevel == null) {
-        return res.status(400).json({ message: 'All fields are required.' });
-    }
+    console.log('Received PUT request for bin:', id);
+    console.log('Request body:', updateData);
 
     try {
-        const updatedBin = await Bin.findByIdAndUpdate(
-            id,
-            { binID, zone, collectorID, collectionTime, wasteLevel },
-            { new: true }
-        );
+        // Find the bin first
+        let bin;
+        try {
+            bin = await Bin.findById(id);
+            console.log('Found bin:', bin);
+        } catch (findError) {
+            console.error('Error finding bin:', findError);
+            return res.status(500).json({ message: 'Error finding bin', error: findError.message });
+        }
 
-        if (!updatedBin) {
+        if (!bin) {
+            console.log('Bin not found:', id);
             return res.status(404).json({ message: 'Bin not found' });
+        }
+
+        // Update only the fields that are provided
+        Object.keys(updateData).forEach(key => {
+            if (updateData[key] !== undefined) {
+                bin[key] = updateData[key];
+            }
+        });
+
+        // If wasteLevel is being updated, also update the collectionTime
+        if (updateData.wasteLevel !== undefined) {
+            bin.collectionTime = Date.now();
+        }
+
+        let updatedBin;
+        try {
+            updatedBin = await bin.save();
+            console.log('Bin updated successfully:', updatedBin);
+        } catch (saveError) {
+            console.error('Error saving updated bin:', saveError);
+            return res.status(500).json({ message: 'Error saving updated bin', error: saveError.message });
         }
 
         res.status(200).json({ message: 'Bin updated successfully!', bin: updatedBin });
     } catch (error) {
-        console.error('Error updating bin:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Unexpected error updating bin:', error);
+        res.status(500).json({ message: 'Unexpected server error', error: error.message });
     }
 });
 
