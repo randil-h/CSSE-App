@@ -68,10 +68,10 @@ export default function Schedules() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-neutral-100">
+        <div className="min-h-screen flex flex-col bg-white">
             {/* Navbar */}
             <div className="sticky top-0 z-10">
-                <Navbar />
+                <Navbar/>
                 <div className="bg-green-200 w-full h-12 flex items-center justify-between px-4">
                     <div className="text-gray-700 font-semibold">Book a collection slot</div>
                     <button
@@ -80,9 +80,9 @@ export default function Schedules() {
                         aria-label="Toggle Sidebar"
                     >
                         {isSidebarVisible ? (
-                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6" />
+                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6"/>
                         ) : (
-                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6" />
+                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6"/>
                         )}
                     </button>
                 </div>
@@ -93,23 +93,35 @@ export default function Schedules() {
                 {/* Sidebar */}
                 {isSidebarVisible && (
                     <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/5 h-full bg-gray-100 shadow-lg z-40">
-                        <SideBar />
+                        <SideBar/>
                     </div>
                 )}
 
                 {/* Main content */}
-                <div className={`flex-1 p-4 transition-all duration-300 ease-in-out ${isSidebarVisible ? "lg:ml-64" : ""}`}>
+                <div
+                    className={`flex-1 p-4 transition-all duration-300 ease-in-out ${isSidebarVisible ? "lg:ml-64" : ""}`}>
                     <div className="container mx-auto max-w-4xl">
-                        <BackButton />
-                        <Breadcrumb items={breadcrumbItems} />
-
+                        {/* Back Button and Breadcrumbs on the same row */}
+                        <div className="flex items-center space-x-4 mb-4">
+                            <BackButton/>
+                            <Breadcrumb items={breadcrumbItems}/>
+                        </div>
+                        {/* Button to go to the schedule list page */}
+                        <div className="text-center sm:text-right mt-6">
+                            <button
+                                onClick={goToScheduleList}
+                                className="py-2 px-6 bg-black rounded-full text-white hover:bg-blue-700 transition duration-300"
+                            >
+                                View Schedule
+                            </button>
                         {/* Form to add new schedule */}
-                        <div className="p-6 bg-white shadow rounded-lg mt-6">
-                            <h2 className="text-2xl font-bold mb-4 text-center sm:text-left">Add a New Special Collection Schedule</h2>
+                        <div className="p-6 bg-gray-100 shadow rounded-lg mt-6">
+                            <h2 className="text-2xl font-bold mb-4 text-center sm:text-left">Add a New Special
+                                Collection Schedule</h2>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {/* Waste Type Selection */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-left">Waste Type</label>
+                                    <label className="block text-lg font-medium mb-2 text-left">Waste Type</label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         {wasteTypes.map((type) => (
                                             <div
@@ -168,7 +180,8 @@ export default function Schedules() {
 
                                 {/* Special Remarks Input */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-left">Special Remarks (Optional)</label>
+                                    <label className="block text-sm font-medium mb-2 text-left">Special Remarks
+                                        (Optional)</label>
                                     <input
                                         type="text"
                                         value={specialRemarks}
@@ -177,20 +190,14 @@ export default function Schedules() {
                                     />
                                 </div>
 
-                                <button type="submit" className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-300">
+                                <button type="submit"
+                                        className="w-full py-2 bg-black text-white rounded-full hover:bg-gray-500 transition duration-300">
                                     Add Schedule
                                 </button>
                             </form>
                         </div>
 
-                        {/* Button to go to the schedule list page */}
-                        <div className="text-center sm:text-left mt-6">
-                            <button
-                                onClick={goToScheduleList}
-                                className="py-2 px-6 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300"
-                            >
-                                View Schedules
-                            </button>
+
                         </div>
                     </div>
                 </div>

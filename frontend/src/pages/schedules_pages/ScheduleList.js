@@ -71,6 +71,14 @@ export default function ScheduleList() {
             });
 
     };
+    // Function to calculate days left
+    const calculateDaysLeft = (scheduleDate) => {
+        const today = new Date();
+        const collectionDate = new Date(scheduleDate);
+        const timeDiff = collectionDate - today;
+        const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert timeDiff to days
+        return daysLeft >= 0 ? daysLeft : 0; // Return 0 if the collection date has passed
+    };
 
     // Static regular schedule data
     const regularSchedules = [
@@ -82,7 +90,7 @@ export default function ScheduleList() {
         navigate("/schedules/home");
     };
     return (
-        <div className="min-h-screen flex flex-col bg-neutral-100">
+        <div className="min-h-screen flex flex-col bg-white">
             {/* Navbar */}
             <div className="sticky top-0 z-10">
                 <Navbar />
@@ -130,10 +138,17 @@ export default function ScheduleList() {
                             <h3 className="text-lg sm:text-xl font-bold">Regular Schedules</h3>
                             <ul className="space-y-2">
                                 {regularSchedules.map((schedule, index) => (
-                                    <li key={index} className="p-4 border rounded-lg flex justify-between items-center">
-                                        <div>
-                                            <strong>Date / Time:</strong> {schedule.date}, {schedule.time}
+                                    <li key={index}
+                                        className="p-4 border rounded-lg flex justify-between items-center text-left">
+                                        <div className="flex flex-col text-left">
+                                            <p>
+                                                <strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()}
+                                            </p>
+                                            <p>
+                                                <strong>Time:</strong> {schedule.time}
+                                            </p>
                                         </div>
+
                                         <div
                                             className={`text-${schedule.status === 'In progress' ? 'green-500' : 'orange-500'}`}>
                                             {schedule.status}
@@ -148,14 +163,20 @@ export default function ScheduleList() {
                             <ul className="space-y-2">
                                 {schedules.map(schedule => (
                                     <li key={schedule._id}
-                                        className="p-4 border rounded-lg flex justify-between items-center">
+                                        className="p-4 border rounded-lg flex justify-between items-center text-left">
                                         <div>
-                                            <strong>Date /
-                                                Time:</strong> {new Date(schedule.date).toLocaleDateString()} {schedule.time}
+                                            <strong>Date
+                                                :</strong> {new Date(schedule.date).toLocaleDateString()}
+                                            <br/>
+                                            <strong>
+                                                Time:</strong>{schedule.time}
                                             <br/>
                                             <strong>Location:</strong> {schedule.location}
                                             <br/>
                                             <strong>Special Remarks:</strong> {schedule.specialRemarks}
+                                            <div className="ml-4 text-gray-400 text-center">
+                                                {calculateDaysLeft(schedule.date)} days left
+                                            </div>
                                         </div>
                                         <button
                                             onClick={() => handleCancel(schedule._id)}
