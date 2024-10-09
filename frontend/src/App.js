@@ -51,6 +51,8 @@ function App() {
               <Route path="/schedules/conf" element={<SpecialCollectionConfirmation />} />
               <Route path="/schedules/history" element={<SpecialCollectionHistory />} />
 
+              <Route path="/reports/home" element={<Reports />} />
+
             </Routes>
         )}
       </div>

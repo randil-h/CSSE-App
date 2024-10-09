@@ -64,5 +64,40 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
+router.get('/charts', async (req, res) => {
+    const { filterBy } = req.query; // Get filter parameter
+
+    let startDate, endDate;
+    const now = new Date();
+
+    if (filterBy === 'week') {
+        // Filter for the current week
+        startDate = new Date(now.setDate(now.getDate() - now.getDay())); // Start of the week (Sunday)
+        endDate = new Date(now.setDate(now.getDate() + 6)); // End of the week (Saturday)
+    } else if (filterBy === 'month') {
+        // Filter for the current month
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1); // Start of the month
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the month
+    } else if (filterBy === 'year') {
+        // Filter for the current year
+        startDate = new Date(now.getFullYear(), 0, 1); // Start of the year
+        endDate = new Date(now.getFullYear(), 11, 31); // End of the year
+    }
+
+    try {
+        // If a filter is provided, apply date range filtering
+        const query = startDate && endDate ? { date: { $gte: startDate, $lte: endDate } } : {};
+
+        const schedules = await Schedule.aggregate([
+            { $match: query }, // Match filtered dates
+            { $group: { _id: "$location", count: { $sum: 1 } } } // Group by location and count
+        ]);
+
+        res.status(200).send(schedules);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
 
 export default router;
