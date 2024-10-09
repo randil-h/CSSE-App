@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
-import { HomeIcon, BanknotesIcon, ArrowLeftStartOnRectangleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, BanknotesIcon, ArrowLeftStartOnRectangleIcon } from '@heroicons/react/24/outline';
 import { TbReportAnalytics } from "react-icons/tb";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { GrUserWorker } from "react-icons/gr";
 import { FiUsers } from "react-icons/fi";
 import axios from 'axios';
+import {MagnifyingGlassIcon} from "@heroicons/react/16/solid";
 
 const Sidebar = () => {
     const [open, setOpen] = useState(true);
@@ -20,7 +21,7 @@ const Sidebar = () => {
       { name: "Monitor Waste", path: "/monitorWaste", icon: MagnifyingGlassIcon },
         { name: "Schedules", path: "/schedules/home", icon: AiOutlineSchedule },
         { name: "Transactions", path: "/inventory/home", icon: BanknotesIcon },
-        { name: "Reports", path: "/insights/marketprice", icon: TbReportAnalytics },
+        { name: "Reports", path: "/reports/home", icon: TbReportAnalytics },
     ];
 
     const isActive = (path) => {
