@@ -10,11 +10,8 @@ import Bin from "./models/Collection/bin.js";
 const app = express();
 
 app.use(express.json());
-app.use(cors({
-    origin: ['http://localhost:3000'],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type'],
-}));
+app.use(cors({ origin: true }));
+
 
 // Function to initialize the database with mockBin data only if it's empty
 async function initializeDatabase() {
