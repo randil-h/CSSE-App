@@ -1,24 +1,59 @@
 import React, { useState } from "react";
 import QrScanner from "react-qr-scanner";
 import axios from "axios";
-import { Camera, AlertCircle } from "lucide-react";
 
 const QRScanner = ({ selectedCamera, onScan }) => {
     const [scanResult, setScanResult] = useState(null);
     const [binData, setBinData] = useState(null);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     const handleScan = async (data) => {
         if (data) {
             console.log("Scanned Data:", data);
             setScanResult(data);
             try {
-                const response = await axios.get(`http://localhost:5000/bin/${data}`);
+                // Fetch bin data
+                console.log("Fetching bin data...");
+                const response = await axios.get(`https://csse-backend.vercel.app/bin/${data}`);
+                console.log("Bin data received:", response.data);
                 setBinData(response.data);
-                onScan(data);
+
+                // Update waste level to 0
+                console.log("Updating waste level...");
+                const updateResponse = await axios.put(`https://csse-backend.vercel.app/bin/${data}`, {
+                    wasteLevel: 0
+                });
+
+                console.log("Update response:", updateResponse);
+
+                if (updateResponse.status === 200) {
+                    setSuccess("Bin emptied successfully!");
+                    console.log("Bin emptied:", data);
+                    onScan(data);
+                    // Update the local binData state to reflect the change
+                    setBinData(prevData => ({ ...prevData, wasteLevel: 0 }));
+                }
             } catch (err) {
-                setError("Error fetching bin information");
-                console.error("Axios Error:", err.response ? err.response.data : err.message);
+                console.error("Full error object:", err);
+                let errorMessage = "Unknown error occurred";
+                if (err.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    errorMessage = `Server Error: ${err.response.status} - ${err.response.statusText}`;
+                    console.error("Response data:", err.response.data);
+                    if (err.response.data && err.response.data.error) {
+                        errorMessage += ` - ${err.response.data.error}`;
+                    }
+                } else if (err.request) {
+                    // The request was made but no response was received
+                    errorMessage = "No response received from server";
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    errorMessage = err.message;
+                }
+                setError(`Error processing bin: ${errorMessage}`);
+                console.error("Axios Error:", errorMessage);
             }
         }
     };
@@ -31,7 +66,6 @@ const QRScanner = ({ selectedCamera, onScan }) => {
     return (
         <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-                <Camera className="inline-block mr-2 mb-1" />
                 Scan Bin's QR Code
             </h2>
             {selectedCamera && (
@@ -52,9 +86,13 @@ const QRScanner = ({ selectedCamera, onScan }) => {
                 </div>
             )}
             {error && (
-                <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md flex items-center">
-                    <AlertCircle className="mr-2" />
-                    <p>{error}</p>
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+                    <span className="block sm:inline">{error}</span>
+                </div>
+            )}
+            {success && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4" role="alert">
+                    <span className="block sm:inline">{success}</span>
                 </div>
             )}
             {binData && (
@@ -64,7 +102,7 @@ const QRScanner = ({ selectedCamera, onScan }) => {
                         <p><span className="font-medium">Bin ID:</span> {binData.binID}</p>
                         <p><span className="font-medium">Zone:</span> {binData.zone}</p>
                         <p><span className="font-medium">Collector ID:</span> {binData.collectorID}</p>
-                        <p><span className="font-medium">Last Collection:</span> {new Date(binData.collectionTime * 1000).toLocaleString()}</p>
+                        <p><span className="font-medium">Last Collection:</span> {new Date(binData.collectionTime).toLocaleString()}</p>
                         <div className="flex items-center">
                             <span className="font-medium mr-2">Waste Level:</span>
                             <div className="w-full bg-gray-200 rounded-full h-2.5">

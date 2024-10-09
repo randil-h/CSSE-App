@@ -30,7 +30,7 @@ export default function QRCodePage() {
 
     const fetchBins = async () => {
         try {
-            const response = await axios.get('http://localhost:5555/bin', { timeout: 5000 });
+            const response = await axios.get('https://csse-backend.vercel.app/bin', { timeout: 5000 });
             setBins(response.data);
         } catch (error) {
             console.error("Error fetching bins:", error);
@@ -74,7 +74,7 @@ export default function QRCodePage() {
 
     const handleQRCodeScanned = async (binId) => {
         try {
-            const response = await axios.get(`http://localhost:5555/bin/${binId}`);
+            const response = await axios.get(`https://csse-backend.vercel.app/bin/${binId}`);
             setBinData(response.data);
             setShowScanner(false);
             enqueueSnackbar("Bin data fetched successfully", { variant: "success" });
