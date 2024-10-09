@@ -56,7 +56,7 @@ mongoose
     });
 
 app.use('/bin', binRoutes);
-app.use('/bin-simulation', mockBin);
+app.use('/bin_simulation', mockBin);
 app.use('/schedule', schedulesRoutes);
 
 export default app;
