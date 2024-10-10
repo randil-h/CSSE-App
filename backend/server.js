@@ -7,6 +7,8 @@ import mockBin, { bins as mockBins, updateWasteLevels } from "./mockBin.js";
 import schedulesRoutes from "./routes/Schedules/ScheduleRoutes.js";
 import Bin from "./models/Collection/bin.js";
 import trackingDeviceRoutes from "./routes/TrackingDeviceRoute/TrackingDeviceRoutes.js";
+import schedulePredictorRoute from "./routes/PredictionRoutes/SchedulePredictorRoute.js";
+import newScheduleRoute from "./routes/PredictionRoutes/NewScheduleRoute.js";
 
 const app = express();
 
@@ -62,5 +64,7 @@ app.use('/bin', binRoutes);
 app.use('/bin_simulation', mockBin);
 app.use('/schedule', schedulesRoutes);
 app.use('/device', trackingDeviceRoutes);
+app.use('/predictor', schedulePredictorRoute);
+app.use('/newSchedule', newScheduleRoute);
 
 export default app;
