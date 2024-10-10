@@ -4,6 +4,7 @@ import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
 import Breadcrumb from "../../components/utility/Breadcrumbs";
+import SchedulePredictionChart from "../../components/predictors/SchedulePredictorChart";
 
 const breadcrumbItems = [
     { name: 'Reports', href: '/reports/home' },
@@ -16,7 +17,7 @@ export default function Reports() {
 
     useEffect(() => {
         // Fetch schedule data based on filter
-        fetch(`http://localhost:5555/schedule/charts?filterBy=${filter}`)
+        fetch(`http://localhost:5555/newSchedule/charts?filterBy=${filter}`)
             .then(response => response.json())
             .then(collectionData => setCollectionData(collectionData))
             .catch(error => console.error('Error fetching data:', error));
@@ -120,6 +121,13 @@ export default function Reports() {
                     .style('text-anchor', 'end')
                     .style('font-weight', 'bold')
                     .style('font-size', 12);
+
+                svg.append('text')
+                    .attr('text-anchor', 'end')
+                    .attr('x', totalWidth / 2)
+                    .attr('y', height + margin.bottom + 5) // Adjust the position
+                    .style('font-weight', 'bold')
+                    .text('');
             };
 
             //add x-axis to both graphs
@@ -130,6 +138,14 @@ export default function Reports() {
                     .attr('class', 'y-axis')
                     .call(d3.axisLeft(y))
                     .style('font-weight', 'semibold');
+
+                svg.append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('transform', 'rotate(-90)')
+                    .attr('y', -margin.left + 15 ) // Adjust the position
+                    .attr('x', -height / 2)
+                    .style('font-weight', 'bold')
+                    .text('Schedules');
             };
 
             //add y-axis to both graphs
@@ -249,6 +265,14 @@ export default function Reports() {
                     .attr('class', 'y-axis')
                     .call(d3.axisLeft(y))
                     .style('font-weight', 'semibold');
+
+                svg.append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('transform', 'rotate(-90)')
+                    .attr('y', -margin.left + 15 ) // Adjust the position
+                    .attr('x', -height / 2)
+                    .style('font-weight', 'bold')
+                    .text('Tracking Devices');
             };
 
             //add y-axis to both graphs
@@ -291,35 +315,40 @@ export default function Reports() {
 
                     {/* Filter Buttons */}
                     <div className="flex-1">
+                        <div className="mb-0.5">
+                            <h4 className="font-bold text-left text-xl ">Graph Visualization</h4>
+                        </div>
                         <div className="flex-row">
-                            <div className="flex space-x-2 mb-4 px-8 justify-center">
+                            <div
+                                className="flex space-x-2 mb-4 lg:mb-6 px-4 md:px-8 lg:px-16 justify-center"> {/* Responsive padding */}
                                 <button
-                                    className={`px-4 py-2 rounded-lg ${filter === 'week' ? 'bg-blue-600 text-white font-semibold' : 'bg-blue-300 text-black font-md'}`}
+                                    className={`px-4 py-2 rounded-lg ${filter === 'week' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-300 text-black font-semibold'}`}
                                     onClick={() => setFilter('week')}
                                 >
-                                    Weekly
+                                    Week
                                 </button>
                                 <button
-                                    className={`px-4 py-2 rounded-lg ${filter === 'month' ? 'bg-blue-600 text-white font-semibold' : 'bg-blue-300 text-black'}`}
+                                    className={`px-4 py-2 rounded-lg ${filter === 'month' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-300 text-black font-semibold'}`}
                                     onClick={() => setFilter('month')}
                                 >
-                                    Monthly
+                                    Month
                                 </button>
                                 <button
-                                    className={`px-4 py-2 rounded-lg ${filter === 'year' ? 'bg-blue-600 text-white font-semibold' : 'bg-blue-300 text-black'}`}
+                                    className={`px-4 py-2 rounded-lg ${filter === 'year' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-300 text-black font-semibold'}`}
                                     onClick={() => setFilter('year')}
                                 >
-                                    Yearly
+                                    Year
                                 </button>
                             </div>
                         </div>
                     </div>
 
+
                     {/* Charts Container */}
                     <div
                         className="flex flex-col sm:flex-row w-full items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                         {/* Chart 1 */}
-                        <div className="w-full sm:w-1/2 bg-white border p-4 shadow rounded-lg">
+                        <div className="w-full sm:w-1/2 bg-blue-50 border p-4 shadow rounded-lg">
                             <div className="flex justify-center">
                                 <h4 className="text-md font-bold">Number of Schedules by Location</h4>
                             </div>
@@ -327,12 +356,15 @@ export default function Reports() {
                         </div>
 
                         {/* Chart 2 */}
-                        <div className="w-full sm:w-1/2 bg-white border p-4 shadow rounded-lg">
+                        <div className="w-full sm:w-1/2 bg-blue-50 border p-4 shadow rounded-lg">
                             <div className="flex justify-center">
                                 <h4 className="text-md font-bold">Tracking Devices Installed by Location</h4>
                             </div>
                             <div id="chart2"></div>
                         </div>
+                    </div>
+                    <div>
+                        <SchedulePredictionChart/>
                     </div>
 
                 </div>
