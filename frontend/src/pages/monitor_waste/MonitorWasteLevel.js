@@ -86,7 +86,7 @@ export default function MonitorWasteLevel() {
       <div className="flex flex-1 relative">
         {/* Main content */}
         <div className={`flex-1 p-4 transition-all duration-300 ease-in-out`}>
-          <div className="w-full h-auto">
+          <div className="w-full h-auto ">
             {/* Dropdown for selecting zone */}
             <div className="mb-4">
               <select
@@ -103,33 +103,57 @@ export default function MonitorWasteLevel() {
 
             {/* Dynamically display average fill rates per zone */}
             <div className="grid grid-cols-2 gap-4">
-              {averageFillRates.map(({ zone, averageFillRate }) => (
-                <div
-                  key={zone}
-                  className="relative px-4 py-24 rounded-3xl shadow-md bg-neutral-300"
-                >
+              {averageFillRates.map(({ zone, averageFillRate, binCounts }) => (
+                <div key={zone} className="px-4 py-4 rounded-3xl bg-neutral-200">
                   {/* Indicator circle with gradient based on average fill rate */}
-                  <div
-                    className="absolute top-3 right-3 size-14 rounded-full flex items-center justify-center text-black font-bold"
-                    style={{
-                      background: getBinGradient(averageFillRate), // Use average fill rate here
-                    }}
-                  >
-                    {averageFillRate}%
+                  <div className="flex flex-row w-full justify-between">
+                    <div>
+                      <h3 className="text-start font-bold flex flex-col">
+                        <span className="text-4xl">{zone}</span>
+                        <span className="font-medium">Zone</span>
+                      </h3>
+                    </div>
+                    <div
+                      className="size-14 rounded-full flex items-center justify-center text-black font-bold"
+                      style={{
+                        background: getBinGradient(averageFillRate), // Use average fill rate here
+                      }}
+                    >
+                      {averageFillRate}%
+                    </div>
                   </div>
-                  <h3 className="text-start font-bold">{zone}</h3>
+                  <div className="flex flex-row w-full justify-between">
+                    <div>
+                      {/* Display bin counts by category or placeholder if undefined */}
+                      <h4 className="text-lg font-bold">Bins by Category</h4>
+                      <ul className="list-none">
+                        {binCounts ? (
+                          Object.entries(binCounts).map(([category, count]) => (
+                            <li key={category} className="flex justify-between">
+                              <span>{category}</span>
+                              <span>{count}</span>
+                            </li>
+                          ))
+                        ) : (
+                          <li className="text-gray-500">No data available</li>  // Placeholder for undefined binCounts
+                        )}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
+
+
           </div>
         </div>
 
         {/* Sidebar */}
         <div
           className={`absolute top-0 left-0 h-full bg-white shadow-lg z-40 p-4 transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'}`}
-          style={{ width: '300px' }}  // Adjust the width as needed
+          style={{width: '300px'}}  // Adjust the width as needed
         >
-          <SideBar />
+          <SideBar/>
         </div>
       </div>
     </div>
