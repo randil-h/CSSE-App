@@ -5,9 +5,9 @@ import Bin from '../../models/Collection/bin.js';
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-    const { binID, zone, collectorID, collectionTime, wasteLevel } = req.body;
+    const { binID, zone, collectorID, collectionTime, wasteLevel, category } = req.body;
 
-    if (!binID || !zone || !collectorID || !collectionTime || wasteLevel == null) {
+    if (!binID || !zone || !collectorID || !collectionTime || wasteLevel || category == null) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
 
@@ -18,6 +18,7 @@ router.post('/', async (req, res) => {
             collectorID,
             collectionTime,
             wasteLevel,
+          category,
         });
 
         await newBin.save();
