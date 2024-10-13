@@ -10,6 +10,7 @@ import trackingDeviceRoutes from "./routes/TrackingDeviceRoute/TrackingDeviceRou
 import schedulePredictorRoute from "./routes/PredictionRoutes/SchedulePredictorRoute.js";
 import newScheduleRoute from "./routes/PredictionRoutes/NewScheduleRoute.js";
 import morgan from 'morgan';
+import customerRoutes from "./routes/CustomerRoutes/CustomerRoutes.js";
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'],
 }));
-app.use(morgan('dev')); // For logging requests in development mode
+app.use(morgan('dev'));
 
 // Health check route
 app.get('/health', (req, res) => {
@@ -74,12 +75,14 @@ mongoose
         console.log(error);
     });
 
+
 app.use('/bin', binRoutes);
 app.use('/bin_simulation', mockBin);
 app.use('/schedule', schedulesRoutes);
 app.use('/device', trackingDeviceRoutes);
 app.use('/predictor', schedulePredictorRoute);
 app.use('/newSchedule', newScheduleRoute);
+app.use('/customer', customerRoutes);
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
