@@ -31,7 +31,7 @@ const QRScanner = ({ selectedCamera, onScan }) => {
                     if (updateResponse.status === 200) {
                         setSuccess("Bin emptied successfully!");
                         setBinData(prevData => ({ ...prevData, wasteLevel: 0 }));
-                        onScan(binID); // Call onScan with the correct binID
+                        onScan(binID);
                         break;
                     }
                 } catch (err) {
