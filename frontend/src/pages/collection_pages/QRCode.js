@@ -8,6 +8,7 @@ import QRScanner from "../../components/collection/QRScanner";
 import { MdQrCodeScanner } from "react-icons/md";
 import axios from "axios";
 import { QRCodeCanvas } from "qrcode.react";
+import html2canvas from "html2canvas";
 
 export default function QRCodePage() {
     const [showScanner, setShowScanner] = useState(false);
@@ -87,7 +88,7 @@ export default function QRCodePage() {
     const generateQRCode = () => {
         if (selectedBin) {
             return (
-                <div className="mt-4 p-4 bg-white rounded-lg shadow">
+                <div className="mt-4 p-4 bg-white rounded-lg shadow" id="qr-card">
                     <h2 className="text-xl font-bold mb-2">Generated QR Code</h2>
                     <QRCodeCanvas value={selectedBin} size={200} /> {/* Use QRCodeCanvas */}
                     <p className="mt-2">Bin ID: {selectedBin}</p>
@@ -95,6 +96,19 @@ export default function QRCodePage() {
             );
         }
         return null;
+    };
+
+    const printCard = async () => {
+        const qrCard = document.getElementById("qr-card");
+        if (qrCard) {
+            const canvas = await html2canvas(qrCard);
+            const imgData = canvas.toDataURL("image/png");
+
+            const link = document.createElement("a");
+            link.href = imgData;
+            link.download = `QRCode_Bin_${selectedBin}.png`;
+            link.click();
+        }
     };
 
     return (
@@ -150,6 +164,15 @@ export default function QRCodePage() {
                                 ))}
                             </select>
                             {generateQRCode()}
+
+                            {selectedBin && (
+                                <button
+                                    className="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md"
+                                    onClick={printCard}
+                                >
+                                    Print Card
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
