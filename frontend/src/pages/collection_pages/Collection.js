@@ -24,7 +24,7 @@ export default function Collection() {
         const fetchBinData = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get("http://localhost:5555/bin");
+                const response = await axios.get("https://csse-backend.vercel.app/bin");
                 const binData = response.data;
 
                 const summary = {};

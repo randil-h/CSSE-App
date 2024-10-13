@@ -9,14 +9,21 @@ import Bin from "./models/Collection/bin.js";
 import trackingDeviceRoutes from "./routes/TrackingDeviceRoute/TrackingDeviceRoutes.js";
 import schedulePredictorRoute from "./routes/PredictionRoutes/SchedulePredictorRoute.js";
 import newScheduleRoute from "./routes/PredictionRoutes/NewScheduleRoute.js";
+import morgan from 'morgan';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    origin: process.env.NODE_ENV === 'production' ? 'https://your-production-domain.com' : '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
+app.use(morgan('dev')); // For logging requests in development mode
+
+// Health check route
+app.get('/health', (req, res) => {
+    res.status(200).send('Server is healthy');
+});
 
 // Function to initialize the database with mockBin data only if it's empty
 async function initializeDatabase() {
@@ -54,7 +61,14 @@ mongoose
             console.log(`App is listening on port: ${PORT}`);
         });
 
-        setInterval(updateBinsInDatabase, 60000);
+        // Periodically update bins, with error handling
+        setInterval(async () => {
+            try {
+                await updateBinsInDatabase();
+            } catch (error) {
+                console.error('Error during bin update:', error);
+            }
+        }, 60000);
     })
     .catch((error) => {
         console.log(error);
@@ -66,5 +80,12 @@ app.use('/schedule', schedulesRoutes);
 app.use('/device', trackingDeviceRoutes);
 app.use('/predictor', schedulePredictorRoute);
 app.use('/newSchedule', newScheduleRoute);
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+    console.log('SIGINT signal received. Closing server gracefully.');
+    await mongoose.connection.close();
+    process.exit(0);
+});
 
 export default app;

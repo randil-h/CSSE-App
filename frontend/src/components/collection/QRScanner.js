@@ -10,50 +10,46 @@ const QRScanner = ({ selectedCamera, onScan }) => {
 
     const handleScan = async (data) => {
         if (data) {
-            console.log("Scanned Data:", data);
             setScanResult(data);
-            try {
-                // Fetch bin data
-                console.log("Fetching bin data...");
-                const response = await axios.get(`https://csse-backend.vercel.app/bin/${data}`);
-                console.log("Bin data received:", response.data);
-                setBinData(response.data);
+            let retryCount = 0;
+            const maxRetries = 3;
+            while (retryCount < maxRetries) {
+                try {
+                    console.log("Fetching bin data...");
+                    const response = await axios.get(`https://csse-backend.vercel.app/bin/${data}`);
+                    console.log("Bin data received:", response.data);
+                    setBinData(response.data);
 
-                // Update waste level to 0
-                console.log("Updating waste level...");
-                const updateResponse = await axios.put(`https://csse-backend.vercel.app/bin/${data}`, {
-                    wasteLevel: 0
-                });
+                    console.log("Updating waste level...");
+                    const updateResponse = await axios.put(`https://csse-backend.vercel.app/bin/${data}`, { wasteLevel: 0 });
 
-                console.log("Update response:", updateResponse);
-
-                if (updateResponse.status === 200) {
-                    setSuccess("Bin emptied successfully!");
-                    console.log("Bin emptied:", data);
-                    onScan(data);
-                    // Update the local binData state to reflect the change
-                    setBinData(prevData => ({ ...prevData, wasteLevel: 0 }));
-                }
-            } catch (err) {
-                console.error("Full error object:", err);
-                let errorMessage = "Unknown error occurred";
-                if (err.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                    errorMessage = `Server Error: ${err.response.status} - ${err.response.statusText}`;
-                    console.error("Response data:", err.response.data);
-                    if (err.response.data && err.response.data.error) {
-                        errorMessage += ` - ${err.response.data.error}`;
+                    if (updateResponse.status === 200) {
+                        setSuccess("Bin emptied successfully!");
+                        setBinData(prevData => ({ ...prevData, wasteLevel: 0 }));
+                        onScan(data);
+                        break;
                     }
-                } else if (err.request) {
-                    // The request was made but no response was received
-                    errorMessage = "No response received from server";
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    errorMessage = err.message;
+                } catch (err) {
+                    retryCount += 1;
+                    if (retryCount >= maxRetries) {
+                        console.error("Full error object:", err);
+                        let errorMessage = "Unknown error occurred";
+                        if (err.response) {
+                            errorMessage = `Server Error: ${err.response.status} - ${err.response.statusText}`;
+                            if (err.response.data && err.response.data.error) {
+                                errorMessage += ` - ${err.response.data.error}`;
+                            }
+                        } else if (err.request) {
+                            errorMessage = "No response received from server";
+                        } else {
+                            errorMessage = err.message;
+                        }
+                        setError(`Error processing bin: ${errorMessage}`);
+                        break;
+                    } else {
+                        console.log(`Retrying... (${retryCount})`);
+                    }
                 }
-                setError(`Error processing bin: ${errorMessage}`);
-                console.error("Axios Error:", errorMessage);
             }
         }
     };
@@ -86,10 +82,16 @@ const QRScanner = ({ selectedCamera, onScan }) => {
                 </div>
             )}
             {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
-                    <span className="block sm:inline">{error}</span>
+                <div
+                    className="bg-red-100 border border-red-400 text-red-700 px-6 py-5 rounded-lg relative mt-6"
+                    style={{ fontSize: "18px", maxHeight: "150px", overflowY: "auto" }}
+                    role="alert"
+                >
+                    <strong className="font-bold block mb-2 text-xl">Error!</strong>
+                    <span className="block">{error}</span>
                 </div>
             )}
+
             {success && (
                 <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4" role="alert">
                     <span className="block sm:inline">{success}</span>
