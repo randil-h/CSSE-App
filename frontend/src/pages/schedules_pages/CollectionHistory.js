@@ -47,9 +47,68 @@ export default function SpecialCollectionHistory() {
 
     const handlePDFDownload = () => {
         const doc = new jsPDF();
-        doc.text("Special Waste Collection History", 10, 10);
+
+        // Add title with larger font size and centered alignment
+        doc.setFontSize(18);
+        doc.text("Special Waste Collection History", doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+
+        // Line below the title for separation
+        doc.setLineWidth(0.5);
+        doc.line(10, 25, doc.internal.pageSize.getWidth() - 10, 25); // Draw line
+
+        // Move the yOffset down to leave space after title and line
+        let yOffset = 35;
+
+        history.forEach((item, index) => {
+            const date = new Date(item.date).toLocaleDateString();
+            const statusText = item.status === "Cancelled" ? "Cancelled" : "Completed";
+            const displayStatus = item.status === "Pending" ? "Completed" : statusText;
+            const statusColor = displayStatus === "Completed" ? 'green' : 'red';
+
+            // Waste Type and Location
+            const wasteType = item.wasteType || "Unknown";
+            const location = item.location || "Not Specified";
+
+            // Section title for each schedule
+            doc.setFontSize(14);
+            doc.text(`Schedule ${index + 1}`, 10, yOffset);
+
+            // Waste Type
+            doc.setFontSize(12);
+            doc.text(`Waste Type:`, 10, yOffset + 10);
+            doc.text(wasteType, 50, yOffset + 10);
+
+            // Date
+            doc.text(`Date:`, 10, yOffset + 20);
+            doc.text(date, 50, yOffset + 20);
+
+            // Location
+            doc.text(`Location:`, 10, yOffset + 30);
+            doc.text(location, 50, yOffset + 30);
+
+            // Status (with color)
+            doc.text(`Status:`, 10, yOffset + 40);
+            doc.setTextColor(displayStatus === "Completed" ? 0 : 255, displayStatus === "Completed" ? 128 : 0, 0); // Green for completed, red for others
+            doc.text(displayStatus, 50, yOffset + 40);
+
+            // Reset color back to default for the next section
+            doc.setTextColor(0, 0, 0);
+
+            // Add space before the next schedule entry
+            yOffset += 50;
+
+            // Check if we need a new page (Avoid content getting cut off)
+            if (yOffset > doc.internal.pageSize.getHeight() - 30) {
+                doc.addPage();
+                yOffset = 20; // Reset yOffset for new page
+            }
+        });
+
+        // Save the generated PDF
         doc.save('special_collection_history.pdf');
     };
+
+
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -81,19 +140,34 @@ export default function SpecialCollectionHistory() {
 
                                 {/* Schedules list */}
                                 <ul className="space-y-2">
-                                    {history.map((item) => (
-                                        <li key={item._id}
-                                            className="p-4 border rounded-lg flex justify-between items-center bg-gray-100 hover:bg-gray-100 transition-shadow duration-300">
-                                            <div className="flex flex-col text-left">
-                                                <span><strong>Date:</strong> {new Date(item.date).toLocaleDateString()}</span>
-                                                <span><strong>Status:</strong> {item.status}</span>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                                    {history.map((item) => {
+                                        // Logic to determine status text and color
+                                        let statusText = item.status === "Cancelled" ? "Cancelled" : "Completed";
+                                        let statusColor = item.status === "Cancelled" ? "text-red-500" : "text-green-500";
 
-                            {/* Right section: Pie chart */}
+                                        // Override the status for "Pending" to show "Completed"
+                                        if (item.status === "Pending") {
+                                            statusText = "Completed"; // Show 'Completed' for Pending
+                                            statusColor = "text-green-500"; // Use green color for Completed
+                                        }
+
+                                        return (
+                                            <li key={item._id}
+                                                className="p-4 border rounded-lg flex justify-between items-center bg-gray-100 hover:bg-gray-100 transition-shadow duration-300">
+                                                <div className="flex flex-col text-left">
+                                                    <span><strong>Date:</strong> {new Date(item.date).toLocaleDateString()}</span>
+                                                    <span>
+                        <strong>Status: </strong>
+                        <span className={statusColor}>{statusText}</span>
+                    </span>
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+
+                            </div>
+                                {/* Right section: Pie chart */}
                             <div className="w-full lg:w-1/2 mt-8 lg:mt-0 lg:ml-6">
                                 <h3 className="text-xl font-bold mb-4">Waste Disposed By Type</h3>
                                 <div className="flex justify-center lg:justify-end">
@@ -110,5 +184,6 @@ export default function SpecialCollectionHistory() {
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} item={selectedItem} />
             )}
         </div>
+
     );
 }

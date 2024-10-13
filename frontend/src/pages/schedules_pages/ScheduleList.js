@@ -101,10 +101,11 @@ export default function ScheduleList() {
 
     // Static regular schedule data
     const regularSchedules = [
-        { date: '11-08-24', time: '10:00 AM', status: 'In progress' },
-        { date: '14-08-24', time: '10:45 AM', status: 'Pending' },
-        { date: '18-08-24', time: '02:00 PM', status: 'Pending' },
+        { date: '2024-10-16', time: '10:00 AM', status: 'In progress' },
+        { date: '2024-10-20', time: '10:45 AM', status: 'Pending' },
+        { date: '2024-10-24', time: '02:00 PM', status: 'Pending' },
     ];
+
     const goToAddSchedule = () => {
         navigate("/schedules/home");
     };

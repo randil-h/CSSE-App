@@ -19,14 +19,7 @@ const wasteTypes = [
     "Recyclables",
     "Other"
 ];
-// Define the zone options for location
-const locationZones = [
-    "Zone A",
-    "Zone B",
-    "Zone C",
-    "Zone D",
-    "Zone E"
-];
+
 export default function Schedules() {
     const navigate = useNavigate();
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
@@ -170,24 +163,22 @@ export default function Schedules() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-lg font-medium mb-2 text-left">Location</label>
-                                    <select
+                                    <label className="block text-lg font-medium mb-2 text-left">
+                                        Location</label>
+                                    <input
+                                        type="text"
                                         value={location}
                                         onChange={(e) => setLocation(e.target.value)}
+                                        placeholder="Enter pickup location"
                                         className="block w-full p-2 border rounded border-gray-200"
                                         required
-                                    >
-                                        <option value="" disabled>Select a zone</option>
-                                        {locationZones.map((zone) => (
-                                            <option key={zone} value={zone}>
-                                                {zone}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    />
                                 </div>
 
+
                                 <div>
-                                    <label className="block text-lg font-medium mb-2 text-left">Special Remarks (Optional)</label>
+                                    <label className="block text-lg font-medium mb-2 text-left">Special Remarks
+                                        (Optional)</label>
                                     <input
                                         type="text"
                                         value={specialRemarks}
