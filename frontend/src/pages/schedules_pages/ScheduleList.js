@@ -103,7 +103,9 @@ export default function ScheduleList() {
             <div className="sticky top-0 z-10">
                 <Navbar/>
                 <div className="bg-green-200 w-full h-12 flex items-center justify-between px-4">
-                    <div className="text-gray-700 font-semibold ">Special Collection Schedule</div>
+                    <div className="text-gray-700 font-semibold text-left sm:text-center flex-1">Special Collection
+                        Schedule
+                    </div>
                     <button
                         onClick={toggleSidebar}
                         className="flex items-center justify-center text-black p-2 rounded-full transition"
@@ -139,7 +141,7 @@ export default function ScheduleList() {
                     </div>
 
 
-                {/* Ongoing Schedules */}
+                    {/* Ongoing Schedules */}
                     <div className="p-4">
                         <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">Ongoing
                             Schedules</h2>
@@ -198,7 +200,7 @@ export default function ScheduleList() {
                                 onClick={goToAddSchedule}
                                 className="bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 transition duration-300 mb-2 sm:mb-0"
                             >
-                                +  Add Special Collection Schedule
+                                + Add Special Collection Schedule
                             </button>
                             {/* New Button for Collection History */}
                             <button

@@ -71,18 +71,20 @@ export default function Schedules() {
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <div className="sticky top-0 z-10">
-                <Navbar />
+                <Navbar/>
                 <div className="bg-green-200 w-full h-12 flex items-center justify-between px-4">
-                    <div className="text-gray-700 font-semibold">Book a collection slot</div>
+                    <div className="text-gray-700 font-semibold text-left sm:text-center flex-1">Book a Slot
+
+                    </div>
                     <button
                         onClick={toggleSidebar}
                         className="flex items-center justify-center text-black p-2 rounded-full transition"
                         aria-label="Toggle Sidebar"
                     >
                         {isSidebarVisible ? (
-                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6" />
+                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6"/>
                         ) : (
-                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6" />
+                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6"/>
                         )}
                     </button>
                 </div>
@@ -91,7 +93,7 @@ export default function Schedules() {
             <div className="flex flex-1 relative">
                 {isSidebarVisible && (
                     <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/5 h-full bg-gray-100 shadow-lg z-40">
-                        <SideBar />
+                        <SideBar/>
                     </div>
                 )}
 
@@ -99,8 +101,8 @@ export default function Schedules() {
                     className={`flex-1 p-4 transition-all duration-300 ease-in-out ${isSidebarVisible ? "lg:ml-64" : ""}`}>
                     <div className="container mx-auto max-w-4xl">
                         <div className="flex items-center space-x-4 mb-4">
-                            <BackButton />
-                            <Breadcrumb items={breadcrumbItems} />
+                            <BackButton/>
+                            <Breadcrumb items={breadcrumbItems}/>
                         </div>
                         <div className="text-center sm:text-right mt-6">
                             <button
@@ -112,7 +114,8 @@ export default function Schedules() {
                         </div>
 
                         <div className="p-6 bg-gray-100 shadow rounded-lg mt-6">
-                            <h2 className="text-2xl font-bold mb-4 text-center sm:text-left">Add a New Special Collection Schedule</h2>
+                            <h2 className="text-2xl font-bold mb-4 text-center sm:text-left">Add a New Special
+                                Collection Schedule</h2>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-lg font-medium mb-2 text-left">Waste Type</label>
