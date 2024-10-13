@@ -13,6 +13,10 @@ const AutoscheduleSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  status: {
+    type: String,
+    required: true
+  }
 });
 
 const AutoSchedule = mongoose.model('Auto Schedule', AutoscheduleSchema);
