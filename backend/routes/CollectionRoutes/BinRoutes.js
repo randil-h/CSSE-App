@@ -71,25 +71,19 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
-    const { id } = req.params;
+router.put('/:binID', async (req, res) => {
+    const { binID } = req.params;
     const updateData = req.body;
 
-    console.log('Received PUT request for bin:', id);
-    console.log('Request body:', updateData);
+    console.log('Received PUT request for bin:', binID);
+    console.log('Request body:', JSON.stringify(updateData, null, 2));
 
     try {
-        let bin;
-        try {
-            bin = await Bin.findById(id);
-            console.log('Found bin:', bin);
-        } catch (findError) {
-            console.error('Error finding bin:', findError);
-            return res.status(500).json({ message: 'Error finding bin', error: findError.message });
-        }
+        let bin = await Bin.findOne({ binID: binID });
+        console.log('Found bin:', bin ? JSON.stringify(bin, null, 2) : 'Not found');
 
         if (!bin) {
-            console.log('Bin not found:', id);
+            console.log('Bin not found:', binID);
             return res.status(404).json({ message: 'Bin not found' });
         }
 
@@ -103,19 +97,17 @@ router.put('/:id', async (req, res) => {
             bin.collectionTime = Date.now();
         }
 
-        let updatedBin;
-        try {
-            updatedBin = await bin.save();
-            console.log('Bin updated successfully:', updatedBin);
-        } catch (saveError) {
-            console.error('Error saving updated bin:', saveError);
-            return res.status(500).json({ message: 'Error saving updated bin', error: saveError.message });
-        }
+        let updatedBin = await bin.save();
+        console.log('Bin updated successfully:', JSON.stringify(updatedBin, null, 2));
 
         res.status(200).json({ message: 'Bin updated successfully!', bin: updatedBin });
     } catch (error) {
         console.error('Unexpected error updating bin:', error);
-        res.status(500).json({ message: 'Unexpected server error', error: error.message });
+        res.status(500).json({
+            message: 'Unexpected server error',
+            error: error.message,
+            stack: error.stack
+        });
     }
 });
 
@@ -132,6 +124,19 @@ router.delete('/:id', async (req, res) => {
     } catch (error) {
         console.error('Error deleting bin:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+});
+
+router.get('/test/:binID', async (req, res) => {
+    const { binID } = req.params;
+    try {
+        const bin = await Bin.findOne({ binID: binID });
+        if (!bin) {
+            return res.status(404).json({ message: 'Bin not found' });
+        }
+        res.json(bin);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching bin', error: error.message });
     }
 });
 

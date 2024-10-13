@@ -9,8 +9,12 @@ const QRScanner = ({ selectedCamera, onScan }) => {
     const [success, setSuccess] = useState("");
 
     const handleScan = async (data) => {
-        // Ensure data is in the correct format (string) before proceeding
-        const binID = typeof data === 'string' ? data : data?.binID || ''; // Adjust based on your data structure
+        if (!data) {
+            console.log("No QR code detected yet");
+            return;
+        }
+
+        const binID = typeof data === 'string' ? data : data.text;
 
         if (binID) {
             setScanResult(binID);
@@ -20,8 +24,7 @@ const QRScanner = ({ selectedCamera, onScan }) => {
             while (retryCount < maxRetries) {
                 try {
                     console.log("Fetching bin data...");
-                    // Use the corrected binID in the request URL
-                    const response = await axios.get(`https://csse-backend.vercel.app/bin/${binID}`);
+                    const response = await axios.get(`https://csse-backend.vercel.app/bin/test/${binID}`);
                     console.log("Bin data received:", response.data);
                     setBinData(response.data);
 

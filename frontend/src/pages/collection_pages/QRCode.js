@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import SideBar from "../../components/utility/SideBar";
 import Navbar from "../../components/utility/Navbar";
@@ -19,6 +19,7 @@ export default function QRCodePage() {
     const [bins, setBins] = useState([]);
     const [selectedBin, setSelectedBin] = useState("");
     const { enqueueSnackbar } = useSnackbar();
+    const cardRef = useRef();
 
     const breadcrumbItems = [
         { name: 'Collection', href: '/collection/' },
@@ -88,9 +89,9 @@ export default function QRCodePage() {
     const generateQRCode = () => {
         if (selectedBin) {
             return (
-                <div className="mt-4 p-4 bg-white rounded-lg shadow" id="qr-card">
+                <div className="mt-4 p-4 bg-white rounded-lg shadow">
                     <h2 className="text-xl font-bold mb-2">Generated QR Code</h2>
-                    <QRCodeCanvas value={selectedBin} size={200} /> {/* Use QRCodeCanvas */}
+                    <QRCodeCanvas value={selectedBin} size={200} />
                     <p className="mt-2">Bin ID: {selectedBin}</p>
                 </div>
             );
@@ -98,17 +99,35 @@ export default function QRCodePage() {
         return null;
     };
 
-    const printCard = async () => {
-        const qrCard = document.getElementById("qr-card");
-        if (qrCard) {
-            const canvas = await html2canvas(qrCard);
-            const imgData = canvas.toDataURL("image/png");
+    const handlePrintCard = async () => {
+        const cardElement = cardRef.current;
+        if (!cardElement) return;
 
-            const link = document.createElement("a");
-            link.href = imgData;
-            link.download = `QRCode_Bin_${selectedBin}.png`;
-            link.click();
-        }
+        // Convert card content to an image
+        const canvas = await html2canvas(cardElement, { useCORS: true });
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = `bin-${selectedBin}-card.png`;
+        link.click();
+    };
+
+    const renderCard = () => {
+        if (!selectedBin) return null;
+
+        return (
+            <div className="mt-4 p-4 bg-white rounded-lg shadow">
+                <div ref={cardRef} className="w-64 h-64 p-4 bg-gray-100 border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center">
+                    <QRCodeCanvas value={selectedBin} size={150} />
+                    <p className="mt-4 font-bold text-lg">Bin ID: {selectedBin}</p>
+                </div>
+                <button
+                    className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md"
+                    onClick={handlePrintCard}
+                >
+                    Download Card
+                </button>
+            </div>
+        );
     };
 
     return (
@@ -163,16 +182,7 @@ export default function QRCodePage() {
                                     <option key={bin.binID} value={bin.binID}>{bin.binID} - {bin.zone}</option>
                                 ))}
                             </select>
-                            {generateQRCode()}
-
-                            {selectedBin && (
-                                <button
-                                    className="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md"
-                                    onClick={printCard}
-                                >
-                                    Print Card
-                                </button>
-                            )}
+                            {renderCard()}
                         </div>
                     </div>
                 </div>
