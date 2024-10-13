@@ -23,7 +23,7 @@ export default function QRCodePage() {
 
     const breadcrumbItems = [
         { name: 'Collection', href: '/collection/' },
-        { name: 'QR Code', href: '/collection/qr-scanner' }
+        { name: 'QR Code', href: '/collection/qr-code' }
     ];
 
     useEffect(() => {

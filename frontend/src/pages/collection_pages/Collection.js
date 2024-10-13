@@ -72,7 +72,7 @@ export default function Collection() {
                             <Breadcrumb items={breadcrumbItems} />
                         </div>
                         <div className="flex justify-start">
-                            <Link to="/collection/qr-scanner">
+                            <Link to="/collection/qr-code">
                                 <button
                                     className="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md focus:outline-none"
                                 >
