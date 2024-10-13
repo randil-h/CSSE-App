@@ -43,9 +43,10 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
+    console.log('Received ID:', id);
 
     try {
-        const bin = await Bin.findById(id);
+        const bin = await Bin.findOne({ _id: id });
         if (!bin) {
             return res.status(404).json({ message: 'Bin not found' });
         }
@@ -56,6 +57,7 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
