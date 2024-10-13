@@ -43,10 +43,18 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
-    console.log('Received ID:', id);
 
     try {
-        const bin = await Bin.findOne({ _id: id });
+        let bin;
+
+        // If the ID is a valid ObjectId, search by _id
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            bin = await Bin.findById(id);
+        } else {
+            // Otherwise, search by binID field
+            bin = await Bin.findOne({ binID: id });
+        }
+
         if (!bin) {
             return res.status(404).json({ message: 'Bin not found' });
         }
