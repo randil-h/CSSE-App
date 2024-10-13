@@ -27,7 +27,7 @@ export default function MonitorWasteLevel() {
   // Fetch bins data from the backend on component mount
   useEffect(() => {
     const fetchBins = async () => {
-      const response = await fetch('http://localhost:5555/bin');
+      const response = await fetch('https://csse-backend.vercel.app/bin');
       const data = await response.json();
       setBinsData(data);
 
@@ -54,7 +54,7 @@ export default function MonitorWasteLevel() {
 
     return Object.entries(zoneFillRates).map(([zone, { total, count }]) => ({
       zone,
-      averageFillRate: total / count,
+      averageFillRate: Math.ceil(total / count),
     }));
   };
 
@@ -89,12 +89,11 @@ export default function MonitorWasteLevel() {
           <div className="w-full h-auto">
             {/* Dropdown for selecting zone */}
             <div className="mb-4">
-              <label htmlFor="zone-dropdown" className="block mb-2">Select Zone:</label>
               <select
                 id="zone-dropdown"
                 value={selectedZone}
                 onChange={(e) => setSelectedZone(e.target.value)}
-                className="border rounded px-2 py-1"
+                className="bg-neutral-200 border-0 rounded-full px-8 py-1"
               >
                 {zones.map((zone, index) => (
                   <option key={index} value={zone}>{zone}</option>
@@ -103,11 +102,11 @@ export default function MonitorWasteLevel() {
             </div>
 
             {/* Dynamically display average fill rates per zone */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {averageFillRates.map(({ zone, averageFillRate }) => (
                 <div
                   key={zone}
-                  className="relative px-4 py-24 rounded-3xl shadow-md bg-sky-100"
+                  className="relative px-4 py-24 rounded-3xl shadow-md bg-neutral-300"
                 >
                   {/* Indicator circle with gradient based on average fill rate */}
                   <div
@@ -116,7 +115,7 @@ export default function MonitorWasteLevel() {
                       background: getBinGradient(averageFillRate), // Use average fill rate here
                     }}
                   >
-                    {averageFillRate.toFixed(2)}%
+                    {averageFillRate}%
                   </div>
                   <h3 className="text-start font-bold">{zone}</h3>
                 </div>
