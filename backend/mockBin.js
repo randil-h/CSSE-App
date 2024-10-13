@@ -12,7 +12,7 @@ const collectors = Array.from({ length: 10 }, (_, index) => `Collector${index + 
 // Initialize bins with 65 entries
 export let bins = Array.from({ length: 65 }, (_, index) => ({
     binID: `B${(index + 1).toString().padStart(3, '0')}`,
-    zone: `Zone ${String.fromCharCode(65 + (index % 6))}`,
+    zone: `${String.fromCharCode(65 + (index % 6))}`,
     collectorID: collectors[index % collectors.length],
     collectionTime: Math.floor(Date.now() / 1000),
     wasteLevel: Math.floor(Math.random() * 30),
