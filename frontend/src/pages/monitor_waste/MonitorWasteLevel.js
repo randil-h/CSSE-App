@@ -4,6 +4,7 @@ import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconSolid } from '@heroicons/react/24/solid';
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconOutline } from '@heroicons/react/24/outline';
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline'; // Import chevron icons
 
 const breadcrumbItems = [
   { name: 'Schedules', href: '/Schedules/home' },
@@ -19,6 +20,10 @@ export default function MonitorWasteLevel() {
   const [binsData, setBinsData] = useState([]);
   const [zones, setZones] = useState([]);
   const [selectedZone, setSelectedZone] = useState("All Zones");
+
+  // State for sorting
+  const [sortCriteria, setSortCriteria] = useState("averageFillRate");
+  const [sortDirection, setSortDirection] = useState("asc"); // Default sorting direction
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
@@ -55,10 +60,28 @@ export default function MonitorWasteLevel() {
     return Object.entries(zoneFillRates).map(([zone, { total, count }]) => ({
       zone,
       averageFillRate: Math.ceil(total / count),
+      binCount: count, // Add bin count for sorting
     }));
   };
 
   const averageFillRates = calculateAverageFillRates();
+
+  // Sorting function
+  const sortedAverageFillRates = () => {
+    return averageFillRates.sort((a, b) => {
+      const valueA = sortCriteria === "averageFillRate" ? a.averageFillRate : a.binCount;
+      const valueB = sortCriteria === "averageFillRate" ? b.averageFillRate : b.binCount;
+      return sortDirection === "asc" ? valueA - valueB : valueB - valueA;
+    });
+  };
+
+  const handleSortChange = (e) => {
+    setSortCriteria(e.target.value);
+  };
+
+  const toggleSortDirection = () => {
+    setSortDirection((prevDirection) => (prevDirection === "asc" ? "desc" : "asc"));
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-neutral-100">
@@ -93,7 +116,7 @@ export default function MonitorWasteLevel() {
                 id="zone-dropdown"
                 value={selectedZone}
                 onChange={(e) => setSelectedZone(e.target.value)}
-                className="bg-neutral-200 border-0 rounded-full px-8 py-1"
+                className="bg-neutral-700 text-gray-200 border-0 rounded-full px-8 py-1"
               >
                 {zones.map((zone, index) => (
                   <option key={index} value={zone}>{zone}</option>
@@ -101,59 +124,81 @@ export default function MonitorWasteLevel() {
               </select>
             </div>
 
+            {/* Sorting dropdown */}
+            <div className="mb-4 flex justify-between items-center">
+              <select
+                id="sort-dropdown"
+                value={sortCriteria}
+                onChange={handleSortChange}
+                className="bg-neutral-700 text-gray-200 border-0 rounded-full px-8 py-1"
+              >
+                <option value="averageFillRate">Average Fill Rate</option>
+                <option value="binCount">Total Bins</option>
+              </select>
+              <button
+                onClick={toggleSortDirection}
+                className="bg-neutral-700 text-gray-200 px-4 py-2 rounded-full flex items-center"
+              >
+                {sortDirection === 'asc' ? (
+                  <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                )}
+              </button>
+            </div>
+
             {/* Dynamically display average fill rates per zone */}
             <div className="grid grid-cols-2 gap-4">
-              {averageFillRates.map(({ zone, averageFillRate, binCounts }) => (
-                <div key={zone} className="px-4 py-4 rounded-3xl bg-neutral-200">
+              {sortedAverageFillRates().map(({ zone, averageFillRate, binCount }) => (
+                <div key={zone} className="px-4 py-4 rounded-3xl bg-neutral-200 flex flex-col gap-4">
                   {/* Indicator circle with gradient based on average fill rate */}
                   <div className="flex flex-row w-full justify-between">
                     <div>
                       <h3 className="text-start font-bold flex flex-col">
-                        <span className="text-4xl">{zone}</span>
+                        <span className="text-5xl">{zone}</span>
                         <span className="font-medium">Zone</span>
                       </h3>
                     </div>
                     <div
-                      className="size-14 rounded-full flex items-center justify-center text-black font-bold"
-                      style={{
-                        background: getBinGradient(averageFillRate), // Use average fill rate here
-                      }}
+                      className="relative size-14 flex items-center justify-center"
                     >
-                      {averageFillRate}%
+                      {/* Outer ring */}
+                      <div
+                        className="absolute w-full h-full rounded-full"
+                        style={{
+                          background: `conic-gradient(${getBinGradient(averageFillRate)} ${averageFillRate * 3.6}deg, #e0e0e0 0deg)`, // Use gradient based on the percentage
+                        }}
+                      ></div>
+                      {/* Inner circle for text */}
+                      <div
+                        className="relative flex items-center justify-center bg-neutral-200 w-12 h-12 rounded-full text-black font-bold">
+                        {averageFillRate}%
+                      </div>
                     </div>
                   </div>
                   <div className="flex flex-row w-full justify-between">
                     <div>
-                      {/* Display bin counts by category or placeholder if undefined */}
-                      <h4 className="text-lg font-bold">Bins by Category</h4>
+                      {/* Display bin count */}
                       <ul className="list-none">
-                        {binCounts ? (
-                          Object.entries(binCounts).map(([category, count]) => (
-                            <li key={category} className="flex justify-between">
-                              <span>{category}</span>
-                              <span>{count}</span>
-                            </li>
-                          ))
-                        ) : (
-                          <li className="text-gray-500">No data available</li>  // Placeholder for undefined binCounts
-                        )}
+                        <li className="flex justify-between">
+                          <span>Total Bins</span>
+                          <span>{binCount}</span>
+                        </li>
                       </ul>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-
-
           </div>
         </div>
 
         {/* Sidebar */}
         <div
           className={`absolute top-0 left-0 h-full bg-white shadow-lg z-40 p-4 transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'}`}
-          style={{width: '300px'}}  // Adjust the width as needed
+          style={{ width: '300px' }}  // Adjust the width as needed
         >
-          <SideBar/>
+          <SideBar />
         </div>
       </div>
     </div>

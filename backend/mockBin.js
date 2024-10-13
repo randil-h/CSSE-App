@@ -7,6 +7,7 @@ const app = express();
 
 app.use(cors());
 
+// Array of collectors
 const collectors = Array.from({ length: 10 }, (_, index) => `Collector${index + 120}`);
 
 // Categories for bins
@@ -28,6 +29,7 @@ export function updateWasteLevels() {
   bins = bins.map((bin) => {
     let newWasteLevel = bin.wasteLevel;
 
+    // Update waste level based on fill rate
     newWasteLevel += bin.fillRate;
 
     if (newWasteLevel > 100) {
@@ -42,24 +44,36 @@ export function updateWasteLevels() {
       newWasteLevel = 0;
     }
 
+    // Log the change in waste level
     if (bin.wasteLevel !== newWasteLevel) {
-      console.log(
-        //`Bin ${bin.binID} in ${bin.zone} changed from ${bin.wasteLevel}% to ${newWasteLevel}%`
-      );
+      console.log(`Bin ${bin.binID} in ${bin.zone} changed from ${bin.wasteLevel}% to ${newWasteLevel}%`);
     }
 
+    // Return updated bin information, including the category
     return {
       ...bin,
       wasteLevel: newWasteLevel,
-      collectionTime: shouldEmptyBin ? Math.floor(Date.now() / 1000) : bin.collectionTime
+      collectionTime: shouldEmptyBin ? Math.floor(Date.now() / 1000) : bin.collectionTime,
     };
   });
 
   return bins;
 }
 
+// Endpoint to get bin simulation data
 app.get('/bin-simulation', (req, res) => {
   res.json(bins);
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+// Optional: Add a route to update the waste levels (if needed)
+app.get('/update-waste-levels', (req, res) => {
+  const updatedBins = updateWasteLevels();
+  res.json(updatedBins);
 });
 
 export default app;
