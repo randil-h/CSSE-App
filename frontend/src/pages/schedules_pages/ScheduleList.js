@@ -6,6 +6,7 @@ import Breadcrumb from "../../components/utility/Breadcrumbs";
 import {useNavigate} from "react-router-dom";
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconSolid } from '@heroicons/react/24/solid';
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconOutline } from '@heroicons/react/24/outline';
+import axios from "axios";
 
 const breadcrumbItems = [
     { name: 'Schedules', href: '/schedules/list' },
@@ -47,48 +48,35 @@ export default function ScheduleList() {
     };
 
     // Define fetchHistory here
-    const fetchHistory = () => {
-        fetch('http://localhost:5555/schedule') // Adjust the endpoint if needed
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const historySchedules = data.filter(schedule => schedule.status === 'Cancelled');
-                setSchedules(historySchedules); // Update state to show only cancelled schedules
-            })
-            .catch(error => console.error('Error fetching history:', error));
+    const fetchHistory = async () => {
+        try {
+            const response = await axios.get("https://csse-backend.vercel.app/schedule");
+            // Filter to get only cancelled schedules
+            const historySchedules = response.data.filter(schedule => schedule.status === 'Cancelled');
+            setSchedules(historySchedules); // Update state to show only cancelled schedules
+        } catch (error) {
+            console.error('Error fetching history:', error);
+        }
     };
 
-    const handleCancel = (id) => {
-        fetch(`http://localhost:5555/schedule/${id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ status: 'Cancelled' }),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(updatedSchedule => {
-                console.log('Updated Schedule:', updatedSchedule);
-                // Fetch the latest schedule data after cancellation
-                fetchSchedules(); // To refresh the active schedules
-                fetchHistory(); // Optionally, you could fetch the history as well if needed
-
-                // Navigate to the history page
-                navigate('/schedules/history');
-            })
-            .catch(error => {
-                console.error('Error cancelling schedule:', error);
-                alert('An error occurred while cancelling the schedule. Please try again.');
+    const handleCancel = async (id) => {
+        try {
+            const response = await axios.patch(`https://csse-backend.vercel.app/schedule/${id}`, {
+                status: 'Cancelled',
             });
+
+            console.log('Updated Schedule:', response.data);
+
+            // Fetch the latest schedule data after cancellation
+            fetchSchedules(); // To refresh the active schedules
+            fetchHistory(); // Optionally, you could fetch the history as well if needed
+
+            // Navigate to the history page
+            navigate('/schedules/history');
+        } catch (error) {
+            console.error('Error cancelling schedule:', error);
+            alert('An error occurred while cancelling the schedule. Please try again.');
+        }
     };
     // Function to calculate days left
     const calculateDaysLeft = (scheduleDate) => {

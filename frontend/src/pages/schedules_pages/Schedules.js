@@ -6,6 +6,7 @@ import BackButton from "../../components/utility/BackButton";
 import Breadcrumb from "../../components/utility/Breadcrumbs";
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconSolid } from '@heroicons/react/24/solid';
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconOutline } from '@heroicons/react/24/outline';
+import axios from "axios";
 
 const breadcrumbItems = [
     { name: 'Schedules', href: '/Schedules/home' },
@@ -37,13 +38,9 @@ export default function Schedules() {
         const scheduleData = { wasteType, date, time, location, specialRemarks };
 
         try {
-            const response = await fetch('http://localhost:5555/schedule', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(scheduleData),
-            });
+            const response = await axios.post('https://csse-backend.vercel.app/schedule', scheduleData);
 
-            if (response.ok) {
+            if (response.status === 201) { // Check for successful creation (201 Created)
                 console.log('Schedule added successfully');
                 // Navigate to confirmation page after successful submission
                 navigate("/schedules/conf");
