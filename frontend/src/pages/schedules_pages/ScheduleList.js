@@ -15,6 +15,7 @@ export default function ScheduleList() {
     const [schedules, setSchedules] = useState([]);
     const navigate = useNavigate();
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+
     useEffect(() => {
         fetchSchedules();
     }, []); // Fetch schedules when the component mounts
@@ -32,15 +33,36 @@ export default function ScheduleList() {
                 return response.json();
             })
             .then(data => {
-                // Filter out cancelled schedules
-                const activeSchedules = data.filter(schedule => schedule.status !== 'Cancelled');
+                // Filter out cancelled schedules and past schedules
+                const activeSchedules = data.filter(schedule => {
+                    const scheduleDate = new Date(schedule.date);
+                    const today = new Date();
+
+                    return scheduleDate >= today && schedule.status !== 'Cancelled';
+
+                });
                 setSchedules(activeSchedules);
             })
             .catch(error => console.error('Error fetching schedules:', error));
     };
 
+    // Define fetchHistory here
+    const fetchHistory = () => {
+        fetch('http://localhost:5555/schedule') // Adjust the endpoint if needed
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const historySchedules = data.filter(schedule => schedule.status === 'Cancelled');
+                setSchedules(historySchedules); // Update state to show only cancelled schedules
+            })
+            .catch(error => console.error('Error fetching history:', error));
+    };
+
     const handleCancel = (id) => {
-        // PATCH request to update the status of the schedule
         fetch(`http://localhost:5555/schedule/${id}`, {
             method: 'PATCH',
             headers: {
@@ -56,20 +78,17 @@ export default function ScheduleList() {
             })
             .then(updatedSchedule => {
                 console.log('Updated Schedule:', updatedSchedule);
-                setSchedules(prevSchedules =>
-                    prevSchedules.filter(schedule => schedule._id !== id)
-                );
-                navigate('/schedules/history', {
-                    state: {
-                        cancelledSchedule: updatedSchedule
-                    }
-                });
+                // Fetch the latest schedule data after cancellation
+                fetchSchedules(); // To refresh the active schedules
+                fetchHistory(); // Optionally, you could fetch the history as well if needed
+
+                // Navigate to the history page
+                navigate('/schedules/history');
             })
             .catch(error => {
                 console.error('Error cancelling schedule:', error);
                 alert('An error occurred while cancelling the schedule. Please try again.');
             });
-
     };
     // Function to calculate days left
     const calculateDaysLeft = (scheduleDate) => {
@@ -93,18 +112,18 @@ export default function ScheduleList() {
         <div className="min-h-screen flex flex-col bg-white">
             {/* Navbar */}
             <div className="sticky top-0 z-10">
-                <Navbar />
+                <Navbar/>
                 <div className="bg-green-200 w-full h-12 flex items-center justify-between px-4">
-                    <div className="text-gray-700 font-semibold">Special Collection Schedule</div>
+                    <div className="text-gray-700 font-semibold ">Special Collection Schedule</div>
                     <button
                         onClick={toggleSidebar}
                         className="flex items-center justify-center text-black p-2 rounded-full transition"
                         aria-label="Toggle Sidebar"
                     >
                         {isSidebarVisible ? (
-                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6" />
+                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6"/>
                         ) : (
-                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6" />
+                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6"/>
                         )}
                     </button>
                 </div>
@@ -115,7 +134,6 @@ export default function ScheduleList() {
                 {/* Sidebar */}
                 {isSidebarVisible && (
                     <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/6 h-full bg-gray-100 shadow-lg z-40">
-
                         <SideBar/>
                     </div>
                 )}
@@ -123,83 +141,81 @@ export default function ScheduleList() {
                 {/* Main content */}
                 <div
                     className={`flex-1 p-4 transition-all duration-300 ease-in-out ${isSidebarVisible ? "lg:ml-64" : ""}`}>
-
                     <div className="w-full h-auto">
-                        <BackButton/>
-                        <Breadcrumb items={breadcrumbItems}/>
+                        {/* Align BackButton and Breadcrumb on the same horizontal line, both on the left */}
+                        <div className="flex items-center justify-start space-x-4 mb-4">
+                            <BackButton/>
+                            <Breadcrumb items={breadcrumbItems}/>
+                        </div>
                     </div>
 
-                    {/* Ongoing Schedules */}
-                    <div className="p-4">
-                        <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">Ongoing
-                            Schedules</h2>
 
-                        <div className="mb-6">
-                            <h3 className="text-lg sm:text-xl font-bold">Regular Schedules</h3>
-                            <ul className="space-y-2">
-                                {regularSchedules.map((schedule, index) => (
-                                    <li key={index}
-                                        className="p-4 border rounded-lg flex justify-between items-center text-left">
-                                        <div className="flex flex-col text-left">
-                                            <p>
-                                                <strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()}
-                                            </p>
-                                            <p>
-                                                <strong>Time:</strong> {schedule.time}
-                                            </p>
+                {/* Ongoing Schedules */}
+                <div className="p-4">
+                    <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">Ongoing
+                        Schedules</h2>
+
+                    <div className="mb-6">
+                        <h3 className="text-lg sm:text-xl font-bold pb-3">Regular Schedules</h3>
+                        <ul className="space-y-2">
+                            {regularSchedules.map((schedule, index) => (
+                                <li key={index}
+                                    className="p-4 border rounded-lg flex justify-between items-center text-left">
+                                    <div className="flex flex-col text-left">
+                                        <p><strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()}</p>
+                                        <p><strong>Time:</strong> {schedule.time}</p>
+                                    </div>
+                                    <div
+                                        className={`text-${schedule.status === 'In progress' ? 'green-500' : 'orange-500'}`}>
+                                        {schedule.status}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="mb-6">
+                        <h3 className="text-lg sm:text-xl font-bold pb-3">Upcoming Special Waste Schedule</h3>
+                        <ul className="space-y-2">
+                            {schedules.map(schedule => (
+                                <li key={schedule._id}
+                                    className="p-4 border rounded-lg flex justify-between items-center text-left">
+                                    <div>
+                                        <strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()}
+                                        <br/>
+                                        <strong>Time:</strong> {schedule.time}
+                                        <br/>
+                                        <strong>Location:</strong> {schedule.location}
+                                        <br/>
+                                        <strong>Special Remarks:</strong> {schedule.specialRemarks}
+                                        <div className="ml-4 text-gray-400 text-center">
+                                            {calculateDaysLeft(schedule.date)} days left
                                         </div>
+                                    </div>
+                                    <button
+                                        onClick={() => handleCancel(schedule._id)}
+                                        className="bg-red-500 text-white py-1 px-4 rounded-full hover:bg-red-600 transition duration-300"
+                                    >
+                                        Cancel
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
 
-                                        <div
-                                            className={`text-${schedule.status === 'In progress' ? 'green-500' : 'orange-500'}`}>
-                                            {schedule.status}
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="mb-6">
-                            <h3 className="text-lg sm:text-xl font-bold">Special Collection Schedules</h3>
-                            <ul className="space-y-2">
-                                {schedules.map(schedule => (
-                                    <li key={schedule._id}
-                                        className="p-4 border rounded-lg flex justify-between items-center text-left">
-                                        <div>
-                                            <strong>Date
-                                                :</strong> {new Date(schedule.date).toLocaleDateString()}
-                                            <br/>
-                                            <strong>
-                                                Time:</strong>{schedule.time}
-                                            <br/>
-                                            <strong>Location:</strong> {schedule.location}
-                                            <br/>
-                                            <strong>Special Remarks:</strong> {schedule.specialRemarks}
-                                            <div className="ml-4 text-gray-400 text-center">
-                                                {calculateDaysLeft(schedule.date)} days left
-                                            </div>
-                                        </div>
-                                        <button
-                                            onClick={() => handleCancel(schedule._id)}
-                                            className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition duration-300"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="text-center sm:text-left">
-                            <button
-                                onClick={goToAddSchedule}
-                                className="bg-green-500 text-white py-2 px-6 rounded-full hover:bg-green-600 transition duration-300"
-                            >
-                                + Add Special Collection Schedule
-                            </button>
-                        </div>
+                    <div className="text-center sm:text-left">
+                        <button
+                            onClick={goToAddSchedule}
+                            className="bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 transition duration-300"
+                        >
+                            + Add Special Collection Schedule
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    );
+</div>
+
+)
+    ;
 }

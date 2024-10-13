@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'],
 }));
 
 // Function to initialize the database with mockBin data only if it's empty

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconSolid } from '@heroicons/react/24/solid';
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconOutline } from '@heroicons/react/24/outline';
 import Breadcrumb from "../../components/utility/Breadcrumbs";
-
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 export default function SpecialCollectionConfirmation() {
     const navigate = useNavigate();
     const [isFAQOpen, setIsFAQOpen] = useState(false);
@@ -76,28 +76,36 @@ export default function SpecialCollectionConfirmation() {
 
                     {/* FAQs Section */}
                     <div className="w-full max-w-xl bg-white shadow-lg rounded-lg p-6 mb-6 mx-auto">
-                        <h3 className="text-lg font-semibold cursor-pointer hover:text-green-600" onClick={toggleFAQ}>
-                            Frequently Asked Questions {isFAQOpen ? '▲' : '▼'}
+                        <h3
+                            className="text-lg font-semibold cursor-pointer flex items-center justify-between hover:text-green-600"
+                            onClick={toggleFAQ}
+                        >
+                            Frequently Asked Questions
+                            {isFAQOpen ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
                         </h3>
                         {isFAQOpen && (
-                            <ul className="mt-4 space-y-2 text-gray-700 leading-relaxed text-left">
+                            <ul className="mt-4 space-y-2 text-gray-700 leading-relaxed text-left transition-all">
                                 <li className="font-bold"><strong>Q:</strong> What items can be collected?</li>
                                 <li ><strong>A:</strong> We collect a variety of items including e-waste, bulky items, and yard waste.</li>
                                 <li className="font-bold"><strong>Q:</strong> How do I schedule a collection?</li>
                                 <li><strong>A:</strong> You can schedule a collection through our scheduling page.</li>
                                 <li className="font-bold"><strong>Q:</strong> Is there a fee for the special collection?</li>
-                                <li><strong>A:</strong> No, special collections are provided free of charge.</li>
+                                <li><strong>A:</strong> Yes, but some special waste collections are provided free of charge.</li>
                             </ul>
                         )}
                     </div>
 
                     {/* Guidelines Section */}
                     <div className="w-full max-w-xl bg-white shadow-lg rounded-lg p-6 mb-6 mx-auto">
-                        <h3 className="text-lg font-semibold cursor-pointer hover:text-green-600" onClick={toggleGuidelines}>
-                            Guidelines for Waste Preparation {isGuidelinesOpen ? '▲' : '▼'}
+                        <h3
+                            className="text-lg font-semibold cursor-pointer flex items-center justify-between hover:text-green-600"
+                            onClick={toggleGuidelines}
+                        >
+                            Guidelines for Waste Preparation
+                            {isGuidelinesOpen ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
                         </h3>
                         {isGuidelinesOpen && (
-                            <ul className="mt-4 space-y-2 text-gray-700 leading-relaxed text-left">
+                            <ul className="mt-4 space-y-2 text-gray-700 leading-relaxed text-left transition-all">
                                 <li>• Ensure all electronic devices are emptied of personal data.</li>
                                 <li>• Bundle yard waste in biodegradable bags.</li>
                                 <li>• For bulky items, please indicate if they are in good condition for donation.</li>
@@ -107,14 +115,18 @@ export default function SpecialCollectionConfirmation() {
 
                     {/* Contact Information Section */}
                     <div className="w-full max-w-xl bg-white shadow-lg rounded-lg p-6 mb-6 mx-auto">
-                        <h3 className="text-lg font-semibold cursor-pointer hover:text-green-600" onClick={toggleContact}>
-                            Contact Information {isContactOpen ? '▲' : '▼'}
+                        <h3
+                            className="text-lg font-semibold cursor-pointer flex items-center justify-between hover:text-green-600"
+                            onClick={toggleContact}
+                        >
+                            Contact Information
+                            {isContactOpen ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
                         </h3>
                         {isContactOpen && (
-                            <div className="mt-4 text-gray-700">
-                                <p>If you need assistance with scheduling or rescheduling collections, please contact us:</p>
+                            <div className="mt-4 text-gray-700 transition-all text-left">
+                                <p>If you need assistance with scheduling or rescheduling collections, please contact us</p>
                                 <p>Email: <a href="mailto:support@wastecollection.com" className="text-blue-500 hover:underline">support@wastecollection.com</a></p>
-                                <p>Phone: <span className="text-blue-500">(555) 123-4567</span></p>
+                                <p>Phone: <span className="text-blue-500">+94 77 123-4567</span></p>
                             </div>
                         )}
                     </div>

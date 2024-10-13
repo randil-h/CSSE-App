@@ -1,32 +1,22 @@
-import {useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
-import BackButton from "../../components/utility/BackButton";
-import { useLocation } from "react-router-dom";
 import jsPDF from 'jspdf';
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconSolid } from '@heroicons/react/24/solid';
 import { ArchiveBoxArrowDownIcon as ArchiveBoxArrowDownIconOutline } from '@heroicons/react/24/outline';
-
+import WasteTypePieChart from "../../components/schedules/WasteTypePieChart";
 import Modal from "../../components/schedules/Model";
 
 export default function SpecialCollectionHistory() {
     const [history, setHistory] = useState([]);
-    const location = useLocation();
-    const historyRef = useRef();
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null); // State for selected item
-    const [selectedSchedule, setSelectedSchedule] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [wasteSummary, setWasteSummary] = useState([]);
+
     useEffect(() => {
         fetchHistory();
     }, []);
-
-    useEffect(() => {
-        // Add the cancelled schedule to history if it exists
-        if (location.state && location.state.cancelledSchedule) {
-            setHistory(prevHistory => [location.state.cancelledSchedule, ...prevHistory]);
-        }
-    }, [location.state]);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
@@ -34,168 +24,91 @@ export default function SpecialCollectionHistory() {
 
     const fetchHistory = () => {
         fetch('http://localhost:5555/schedule')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                const currentDate = new Date();
-                const pastSchedules = data.map(schedule => {
-                    const scheduleDate = new Date(schedule.date);
-                    // Check if the schedule date is in the past
-                    if (scheduleDate < currentDate) {
-                        return { ...schedule, status: 'Completed' }; // Set status to 'Completed'
-                    }
-                    return schedule; // Leave status as is for future schedules
-                }).filter(schedule => schedule.status === 'Cancelled' || new Date(schedule.date) < currentDate);
-
-                // Set the history state
-                setHistory(pastSchedules);
-            })
-            .catch(error => console.error('Error fetching history:', error));
+                setHistory(data);
+                calculateWasteSummary(data);
+            });
     };
 
-
-
-    // Function to handle the PDF export
-    const handlePDFDownload = () => {
-        const doc = new jsPDF('p', 'mm', 'a4');
-
-        // Title
-        doc.setFontSize(18);
-        doc.text("Special Waste Collection History", 105, 20, null, null, "center");
-
-        // Header
-        let yPosition = 40; // Starting y position for the content
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.text('Schedule', 10, yPosition);
-        doc.text('Date', 60, yPosition);
-        doc.text('Time', 100, yPosition);
-        doc.text('Status', 150, yPosition);
-
-        // Line under header for better separation
-        doc.line(10, yPosition + 2, 200, yPosition + 2);
-
-        yPosition += 10;
-
-        // Set a regular font for the content
-        doc.setFont("helvetica", "normal");
-
-        // Loop through history items and place them into the table
-        history.forEach((item, index) => {
-            const date = new Date(item.date).toLocaleDateString();
-            const status = item.status === 'Cancelled' ? "Cancelled" : "Completed";
-
-            doc.text(`${index + 1}`, 10, yPosition);  // Schedule number
-            doc.text(`${date}`, 60, yPosition);
-            doc.text(`${item.time}`, 100, yPosition);// Date and time
-            doc.text(`${status}`, 150, yPosition);  // Status
-
-            yPosition += 10; // Move down for next row
-
-            // If we reach the bottom of the page, create a new page
-            if (yPosition > 280) {
-                doc.addPage();
-                yPosition = 20; // Reset y position after new page
+    const calculateWasteSummary = (schedules) => {
+        const summary = schedules.reduce((acc, schedule) => {
+            if (schedule.wasteType) {
+                acc[schedule.wasteType] = (acc[schedule.wasteType] || 0) + 1;
             }
-        });
+            return acc;
+        }, {});
+        const pieChartData = Object.keys(summary).map(type => ({
+            type,
+            value: summary[type]
+        }));
+        setWasteSummary(pieChartData);
+    };
 
-        // Footer
-        doc.setFontSize(10);
-        doc.text("Generated by Waste Collection System", 105, 290, null, null, "center");
-
-        // Save the PDF with a more descriptive name
+    const handlePDFDownload = () => {
+        const doc = new jsPDF();
+        doc.text("Special Waste Collection History", 10, 10);
         doc.save('special_collection_history.pdf');
     };
 
-
-    // Function to handle the review button click
-    const handleReviewClick = (item) => {
-        setSelectedItem(item); // Set the selected item
-        setIsModalOpen(true); // Open the modal
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedItem(null); // Clear selected item
-    };
-
     return (
-        <div className="min-h-screen flex flex-col bg-neutral-100">
-            <div className="sticky top-0 z-10">
-                <Navbar />
-                <div className="bg-gray-100 w-full h-12 flex items-center justify-between px-4">
-                    <div className="text-gray-700 font-semibold"></div>
-                    <button
-                        onClick={toggleSidebar}
-                        className="flex items-center justify-center text-black p-4 rounded-full transition"
-                        aria-label="Toggle Sidebar"
-                    >
-                        {isSidebarVisible ? (
-                            <ArchiveBoxArrowDownIconSolid className="h-6 w-6" />
-                        ) : (
-                            <ArchiveBoxArrowDownIconOutline className="h-6 w-6" />
-                        )}
-                    </button>
-                </div>
-            </div>
-
+        <div className="min-h-screen flex flex-col bg-white">
+            <Navbar />
             <div className="flex flex-1">
                 {isSidebarVisible && (
-                    <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/5 h-full bg-gray-100 shadow-lg z-40">
+                    <div className="fixed top-0 left-0 w-2/3 sm:w-1/3 lg:w-1/5 h-full bg-gray-100 z-40">
                         <SideBar />
                     </div>
                 )}
 
-                <div className={`flex-grow transition-all duration-300 ease-in-out p-4 ${isSidebarVisible ? 'ml-0 sm:ml-64' : 'ml-0'}`}>
-                    <div className="w-full max-w-3xl mx-auto">
-                        <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">Special Collection History</h2>
-                        <h3 className="text-lg font-bold mb-4">Past Schedules</h3>
-                        <ul className="space-y-2">
-                            {history.map((item) => (
-                                <li key={item._id}
-                                    className="p-4 border rounded-lg flex justify-between items-center bg-white shadow hover:shadow-md transition-shadow duration-300">
-                                    <div className="flex flex-col text-left">
-                <span>
-                    <strong>Date:</strong> {new Date(item.date).toLocaleDateString()}
-                </span>
-                                        <span>
+                <div className={`flex-grow transition-all duration-300 p-4 ${isSidebarVisible ? 'ml-0 sm:ml-64' : 'ml-0'}`}>
+                    <div className="w-full max-w-6xl mx-auto">
+                        <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">Special Waste Collection History</h2>
 
-                    <strong>Status:</strong>
-                    <span className={item.status === "Cancelled" ? "text-red-500" : "text-green-500"}>
-                        {" "} {/* Adding space here */}
-                        {item.status || "Completed"}
-                    </span>
-                </span>
-                                    </div>
+                        {/* Flex container for web view */}
+                        <div className="flex flex-col lg:flex-row">
+                            {/* Left section: Past schedules and download button */}
+                            <div className="w-full lg:w-1/2">
+                                <div className="flex justify-between items-center">
+                                    <h3 className="text-xl font-bold mb-4">Past Schedules</h3>
                                     <button
-                                        onClick={() => handleReviewClick(item)}
-                                        className="bg-green-500 text-white py-1 px-4 rounded-lg hover:bg-green-600 transition duration-300"
+                                        onClick={handlePDFDownload}
+                                        className="bg-black py-2 px-6 rounded-full text-sm hover:bg-gray-400 transition duration-300 text-white"
                                     >
-                                        Review
+                                        Download Details
                                     </button>
-                                </li>
-                            ))}
-                        </ul>
+                                </div>
 
+                                {/* Schedules list */}
+                                <ul className="space-y-2">
+                                    {history.map((item) => (
+                                        <li key={item._id}
+                                            className="p-4 border rounded-lg flex justify-between items-center bg-gray-100 hover:bg-gray-100 transition-shadow duration-300">
+                                            <div className="flex flex-col text-left">
+                                                <span><strong>Date:</strong> {new Date(item.date).toLocaleDateString()}</span>
+                                                <span><strong>Status:</strong> {item.status}</span>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
 
-                        <div className="text-right mt-6">
-                            <button
-                                onClick={handlePDFDownload}
-                                className="bg-black py-2 px-6 rounded-full text-sm hover:bg-gray-400 transition duration-300 text-white"
-                            >
-                                Download Details
-                            </button>
+                            {/* Right section: Pie chart */}
+                            <div className="w-full lg:w-1/2 mt-8 lg:mt-0 lg:ml-6">
+                                <h3 className="text-xl font-bold mb-4">Waste Disposed By Type</h3>
+                                <div className="flex justify-center lg:justify-end">
+                                    <WasteTypePieChart data={wasteSummary} />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Modal for viewing schedule details */}
-            <Modal isOpen={isModalOpen} onClose={closeModal} item={selectedItem}/>
+            {/* Modal */}
+            {isModalOpen && selectedItem && (
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} item={selectedItem} />
+            )}
         </div>
     );
 }

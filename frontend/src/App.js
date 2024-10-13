@@ -41,12 +41,13 @@ function App() {
               <Route path="/collection" element={<Collection />} />
               <Route path="/collection/qr-scanner" element={<QRPage />} />
 
-              <Route path="/schedules/home" element={<Schedules />} />
+
               <Route path="/transactions/home" element={<Transactions />} />
               <Route path="/reports/home" element={<Reports />} />
 
               <Route path="/monitorWaste" element={<MonitorWasteLevel />} />
 
+              <Route path="/schedules/home" element={<Schedules />} />
               <Route path="/schedules/list" element={<ScheduleList />} />
               <Route path="/schedules/conf" element={<SpecialCollectionConfirmation />} />
               <Route path="/schedules/history" element={<SpecialCollectionHistory />} />
