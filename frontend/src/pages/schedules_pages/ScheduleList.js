@@ -152,71 +152,80 @@ export default function ScheduleList() {
 
 
                 {/* Ongoing Schedules */}
-                <div className="p-4">
-                    <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">Ongoing
-                        Schedules</h2>
+                    <div className="p-4">
+                        <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">Ongoing
+                            Schedules</h2>
 
-                    <div className="mb-6">
-                        <h3 className="text-lg sm:text-xl font-bold pb-3">Regular Schedules</h3>
-                        <ul className="space-y-2">
-                            {regularSchedules.map((schedule, index) => (
-                                <li key={index}
-                                    className="p-4 border rounded-lg flex justify-between items-center text-left">
-                                    <div className="flex flex-col text-left">
-                                        <p><strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()}</p>
-                                        <p><strong>Time:</strong> {schedule.time}</p>
-                                    </div>
-                                    <div
-                                        className={`text-${schedule.status === 'In progress' ? 'green-500' : 'orange-500'}`}>
-                                        {schedule.status}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="mb-6">
-                        <h3 className="text-lg sm:text-xl font-bold pb-3">Upcoming Special Waste Schedule</h3>
-                        <ul className="space-y-2">
-                            {schedules.map(schedule => (
-                                <li key={schedule._id}
-                                    className="p-4 border rounded-lg flex justify-between items-center text-left">
-                                    <div>
-                                        <strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()}
-                                        <br/>
-                                        <strong>Time:</strong> {schedule.time}
-                                        <br/>
-                                        <strong>Location:</strong> {schedule.location}
-                                        <br/>
-                                        <strong>Special Remarks:</strong> {schedule.specialRemarks}
-                                        <div className="ml-4 text-gray-400 text-center">
-                                            {calculateDaysLeft(schedule.date)} days left
+                        <div className="mb-6">
+                            <h3 className="text-lg sm:text-xl font-bold pb-3">Regular Schedules</h3>
+                            <ul className="space-y-2">
+                                {regularSchedules.map((schedule, index) => (
+                                    <li key={index}
+                                        className="p-4 border rounded-lg flex justify-between items-center text-left">
+                                        <div className="flex flex-col text-left">
+                                            <p><strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()}</p>
+                                            <p><strong>Time:</strong> {schedule.time}</p>
                                         </div>
-                                    </div>
-                                    <button
-                                        onClick={() => handleCancel(schedule._id)}
-                                        className="bg-red-500 text-white py-1 px-4 rounded-full hover:bg-red-600 transition duration-300"
-                                    >
-                                        Cancel
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                                        <div
+                                            className={`text-${schedule.status === 'In progress' ? 'green-500' : 'orange-500'}`}>
+                                            {schedule.status}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
 
-                    <div className="text-center sm:text-left">
-                        <button
-                            onClick={goToAddSchedule}
-                            className="bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 transition duration-300"
-                        >
-                            + Add Special Collection Schedule
-                        </button>
+                        <div className="mb-6">
+                            <h3 className="text-lg sm:text-xl font-bold pb-3">Upcoming Special Waste Schedule</h3>
+                            <ul className="space-y-2">
+                                {schedules.map(schedule => (
+                                    <li key={schedule._id}
+                                        className="p-4 border rounded-lg flex justify-between items-center text-left">
+                                        <div>
+                                            <strong>Date:</strong> {new Date(schedule.date).toLocaleDateString()}
+                                            <br/>
+                                            <strong>Time:</strong> {schedule.time}
+                                            <br/>
+                                            <strong>Location:</strong> {schedule.location}
+                                            <br/>
+                                            <strong>Special
+                                                Remarks:</strong> {schedule.specialRemarks ? schedule.specialRemarks : 'N/A'}
+                                            <div className="ml-0 text-gray-400 text-left">
+                                                {calculateDaysLeft(schedule.date)} days left
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => handleCancel(schedule._id)}
+                                            className="bg-red-500 text-white py-1 px-4 rounded-full hover:bg-red-600 transition duration-300"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row justify-between text-center sm:text-left">
+                            <button
+                                onClick={goToAddSchedule}
+                                className="bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 transition duration-300 mb-2 sm:mb-0"
+                            >
+                                +  Add Special Collection Schedule
+                            </button>
+                            {/* New Button for Collection History */}
+                            <button
+                                onClick={() => navigate('/schedules/history')} // Navigate to collection history
+                                className="bg-black text-white py-2 px-6 rounded-full hover:bg-gray-800 transition duration-300"
+                            >
+                                View Collection History
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
-</div>
 
-)
-    ;
+    )
+        ;
 }
