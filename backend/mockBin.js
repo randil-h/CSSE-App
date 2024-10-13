@@ -8,20 +8,42 @@ const app = express();
 app.use(cors());
 
 // Array of collectors
-const collectors = Array.from({ length: 10 }, (_, index) => `Collector${index + 120}`);
+const collectors = Array.from({ length: 50 }, (_, index) => `Collector${index + 120}`);
 
 // Categories for bins
 const categories = ['General', 'Organic', 'Recyclable', 'Hazardous'];
 
-// Initialize bins with 200 entries
-export let bins = Array.from({ length: 200 }, (_, index) => ({
-  binID: `B${(index + 1).toString().padStart(3, '0')}`,
-  zone: `${String.fromCharCode(65 + (index % 6))}`,
-  collectorID: collectors[index % collectors.length],
+// Helper function to generate random values within a range
+const getRandomInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+// Helper function to skew waste levels to extremes (favor low or high)
+const getSkewedWasteLevel = () => {
+  const skew = Math.random(); // Generate a random number between 0 and 1
+
+  if (skew < 0.25) {
+    // 25% chance of having very low waste level (0-20)
+    return getRandomInRange(0, 20);
+  } else if (skew < 0.5) {
+    // 25% chance of having moderately low waste level (20-40)
+    return getRandomInRange(20, 40);
+  } else if (skew < 0.75) {
+    // 25% chance of having moderately high waste level (60-80)
+    return getRandomInRange(60, 80);
+  } else {
+    // 25% chance of having very high waste level (80-100)
+    return getRandomInRange(80, 100);
+  }
+};
+
+// Initialize bins with 1000 entries and skewed waste levels per zone
+export let bins = Array.from({ length: 1000 }, (_, index) => ({
+  binID: `B${(index + 1).toString().padStart(4, '0')}`,
+  zone: `${String.fromCharCode(65 + (index % 10))}`, // More zones for better distribution
+  collectorID: collectors[getRandomInRange(0, collectors.length - 1)], // Random collector assignment
   collectionTime: Math.floor(Date.now() / 1000),
-  wasteLevel: Math.floor(Math.random() * 80) + 20,  // Starting with a higher variation (20% to 100%)
-  fillRate: Math.random() * 8 + 1,  // Fill rate now varies more (1 to 9)
-  category: categories[index % categories.length]  // Assign category to each bin
+  wasteLevel: getSkewedWasteLevel(),  // Skewed random waste levels
+  fillRate: Math.random() * 10 + 1,  // Fill rate varies (1 to 11)
+  category: categories[getRandomInRange(0, categories.length - 1)]  // Random category assignment
 }));
 
 // Function to update waste levels over time and simulate emptying
@@ -49,7 +71,7 @@ export function updateWasteLevels() {
       console.log(`Bin ${bin.binID} in ${bin.zone} changed from ${bin.wasteLevel}% to ${newWasteLevel}%`);
     }
 
-    // Return updated bin information, including the category
+    // Return updated bin information
     return {
       ...bin,
       wasteLevel: newWasteLevel,

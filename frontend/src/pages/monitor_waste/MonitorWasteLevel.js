@@ -36,6 +36,7 @@ export default function MonitorWasteLevel() {
   useEffect(() => {
     const fetchBins = async () => {
       const response = await fetch('https://csse-backend.vercel.app/bin');
+      /*const response = await fetch('http://localhost:5555/bin');*/
       const data = await response.json();
       setBinsData(data);
 
@@ -251,7 +252,7 @@ export default function MonitorWasteLevel() {
                           <div className="px-4 flex justify-between items-center h-full"> {/* Padding applied inside */}
                             <div className="flex flex-row gap-1 h-full items-center">
                               <div
-                                className="bg-neutral-800 text-neutral-100 rounded-full size-6 font-bold text-sm items-center justify-center content-center">
+                                className="bg-neutral-800 text-neutral-100 rounded-full size-6 font-bold text-xs items-center justify-center content-center">
                                 {count}
                               </div>
                               <span className="text-sm">{category}</span>
