@@ -179,9 +179,9 @@ export default function MonitorWasteLevel() {
                   className="bg-sky-700 text-gray-200 mr-1 p-0.5 rounded-full flex items-center"
                 >
                   {sortDirection === 'asc' ? (
-                    <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
+                    <ChevronUpIcon className="h-5 w-5" aria-hidden="true"/>
                   ) : (
-                    <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                    <ChevronDownIcon className="h-5 w-5" aria-hidden="true"/>
                   )}
                 </button>
               </div>
@@ -190,50 +190,52 @@ export default function MonitorWasteLevel() {
 
             {/* Dynamically display average fill rates per zone */}
             <div className="grid xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4">
-              {sortedAverageFillRates().map(({ zone, averageFillRate, binCount, categoryCounts }) => (
-                <div key={zone}
-                     className="px-4 py-4 rounded-3xl bg-neutral-200 hover:bg-neutral-300 transition duration-200 flex flex-col gap-4">
+              {sortedAverageFillRates().map(({zone, averageFillRate, binCount, categoryCounts}) => (
+                <div
+                  key={zone}
+                  className="rounded-3xl bg-neutral-200 hover:bg-neutral-300 transition duration-200 flex flex-col gap-2"
+                >
+                  {/* Parent Card Wrapper with padding */}
+                  <div className="px-4 pt-4 pb-2"> {/* Add padding to the parent card */}
+                    {/* Indicator ring with gradient based on average fill rate */}
+                    <div className="flex flex-row w-full justify-between ">
+                      <div>
+                        <h3 className="text-start font-bold flex flex-col">
+                          <span className="text-5xl text-neutral-800">{zone}</span>
+                          <span className="font-medium">Zone</span>
+                        </h3>
+                      </div>
 
-                  {/* Indicator ring with gradient based on average fill rate */}
-                  <div className="flex flex-row w-full justify-between">
-                    <div>
-                      <h3 className="text-start font-bold flex flex-col">
-                        <span className="text-5xl text-neutral-800">{zone}</span>
-                        <span className="font-medium">Zone</span>
-                      </h3>
+                      {/* Percentage circle using CircularProgressbar */}
+                      <div className="relative" style={{width: '50px', height: '50px'}}>
+                        <CircularProgressbar
+                          value={averageFillRate}
+                          text={`${averageFillRate}%`}
+                          styles={{
+                            path: {
+                              stroke: '#457c39',
+                              strokeWidth: 8,
+                            },
+                            text: {
+                              fill: 'black',
+                              fontSize: '28px',
+                              fontWeight: 'bold',
+                            },
+                            trail: {
+                              stroke: '#e0e0e0',
+                              strokeWidth: 10,
+                            },
+                          }}
+                        />
+                      </div>
                     </div>
 
-                    {/* Percentage circle using CircularProgressbar */}
-                    <div className="relative" style={{width: '50px', height: '50px'}}>
-                      <CircularProgressbar
-                        value={averageFillRate}
-                        text={`${averageFillRate}%`}
-                        styles={{
-                          path: {
-                            stroke: '#457c39', // Use your existing gradient function
-                            strokeWidth: 8, // Adjust as needed
-                          },
-                          text: {
-                            fill: 'black',
-                            fontSize: '28px', // Adjust as needed
-                            fontWeight: 'bold',
-                          },
-                          trail: {
-                            stroke: '#e0e0e0',
-                            strokeWidth: 10, // Adjust as needed
-                          },
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-row w-full justify-between">
-                    <div>
+                    <div className="flex flex-row w-full justify-between mt-2">
                       {/* Display bin count */}
                       <ul className="list-none">
                         <li className="flex justify-between">
                           <div
-                            className="bg-neutral-800 text-neutral-100 rounded-full size-6 font-bold text-sm items-center justify-center content-center">
+                            className="bg-sky-900 text-neutral-100 rounded-full size-8 font-bold text-sm items-center justify-center content-center">
                             {binCount}
                           </div>
                         </li>
@@ -241,14 +243,13 @@ export default function MonitorWasteLevel() {
                     </div>
                   </div>
 
-                  {/* Display categorical bin counts and fill rates */}
-                  <div className="mt-4">
-                    <ul className="list-none flex flex-col ">
+                  {/* Categorical bin counts and fill rates */}
+                  <div className="w-full"> {/* Full-width container */}
+                    <ul className="list-none">
                       {Object.entries(categoryCounts).map(([category, {count, averageFillRate}]) => (
-                        <li key={category}
-                            className="flex flex-col border-t border-gray-300 py-2"> {/* Added border-t and padding */}
-                          <div className="flex justify-between items-center ">
-                            <div className="flex flex-row gap-1">
+                        <li key={category} className="border-t border-gray-400 py-2"> {/* Full-width border */}
+                          <div className="px-4 flex justify-between items-center h-full"> {/* Padding applied inside */}
+                            <div className="flex flex-row gap-1 h-full items-center">
                               <div
                                 className="bg-neutral-800 text-neutral-100 rounded-full size-6 font-bold text-sm items-center justify-center content-center">
                                 {count}
@@ -256,17 +257,14 @@ export default function MonitorWasteLevel() {
                               <span className="text-sm">{category}</span>
                             </div>
 
-                            <div className="flex flex-col items-center ">
+                            <div className="flex flex-col items-center">
                               <span className="font-bold text-sm">{averageFillRate}%</span>
-                              <div
-                                className="w-12 h-1 bg-gray-300 rounded-full"
-                                style={{border: '0px solid #d1d5db'}} // Remove unnecessary border
-                              >
+                              <div className="w-12 h-1 bg-gray-300 rounded-full">
                                 <div
                                   className="h-full rounded-full"
                                   style={{
                                     width: `${averageFillRate}%`,
-                                    backgroundColor: '#457c39'
+                                    backgroundColor: '#457c39',
                                   }}
                                 />
                               </div>
@@ -276,11 +274,10 @@ export default function MonitorWasteLevel() {
                       ))}
                     </ul>
                   </div>
-
-
                 </div>
               ))}
             </div>
+
 
           </div>
         </div>
