@@ -19,7 +19,7 @@ const Sidebar = () => {
         { name: "Customers", path: "/finances/home", icon: FiUsers },
         { name: "Collection", path: "/collection", icon: GrUserWorker },
       { name: "Monitor Waste", path: "/monitorWaste", icon: MagnifyingGlassIcon },
-        { name: "Schedules", path: "/schedules/home", icon: AiOutlineSchedule },
+        { name: "Schedules", path: "/schedules/list", icon: AiOutlineSchedule },
         { name: "Transactions", path: "/inventory/home", icon: BanknotesIcon },
         { name: "Reports", path: "/reports/home", icon: TbReportAnalytics },
     ];
