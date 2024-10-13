@@ -1,3 +1,4 @@
+import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from "react";
 import LandingPage from "./pages/landingPage";
@@ -15,6 +16,7 @@ import SpecialCollectionHistory from "./pages/schedules_pages/CollectionHistory"
 import MonitorWasteLevel from "./pages/monitor_waste/MonitorWasteLevel";
 import QRPage from "./pages/collection_pages/QRCode";
 import QRScanPage from "./pages/collection_pages/QRScanPage";
+import Registration from "./pages/customers_pages/Registration";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,9 @@ function App() {
               <Route path="/schedules/history" element={<SpecialCollectionHistory />} />
 
               <Route path="/reports/home" element={<Reports />} />
+
+              <Route path="/customers" element={<Customers/>}/>
+              <Route path="/registration" element={<Registration/>}/>
 
             </Routes>
         )}

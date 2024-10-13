@@ -33,9 +33,11 @@ export default function Welcome_banner() {
           >
             Dashboard
           </Link>
-          <button className="bg-black text-white px-8 py-1 rounded-full font-semibold text-base transition duration-300 hover:bg-sky-500">
-            Learn More
-          </button>
+          <Link
+            to="/registration"
+            className="bg-black text-white px-8 py-1 rounded-full font-semibold text-base transition duration-300 hover:bg-sky-500" >
+            Register Now
+          </Link>
         </div>
       </div>
     </div>
