@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/utility/Navbar";
 import { Link } from 'react-router-dom';
@@ -30,6 +31,16 @@ export default function Customers() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [expandedRows, setExpandedRows] = useState([]);
+
+  const toggleRow = (customerId) => {
+    setExpandedRows((prevExpandedRows) =>
+      prevExpandedRows.includes(customerId)
+        ? prevExpandedRows.filter((id) => id !== customerId)
+        : [...prevExpandedRows, customerId]
+    );
+  };
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
@@ -64,6 +75,8 @@ export default function Customers() {
 
 
 
+
+
   return (
     <div className="min-h-screen flex flex-col bg-neutral-100">
       {/* Navbar */}
@@ -89,57 +102,64 @@ export default function Customers() {
 
       <div className="flex flex-1 relative">
         {/* Main content */}
-        <div className={`flex-1 p-4 transition-all duration-300 ease-in-out`}>
-          <div id="print-area">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+        <div className={`flex-1  transition-all duration-300 ease-in-out`}>
+          <div id="print-area" className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left rtl:text-right text-gray-500">
               <thead className="text-xs text-gray-700 shadow-md uppercase bg-gray-100 border-l-4 border-gray-500">
               <tr>
-                <th></th>
+
                 <th scope="col" className="px-6 py-3">Name</th>
-                <th scope="col" className="px-6 py-3">Email</th>
-                <th scope="col" className="px-6 py-3">Phone</th>
-                <th scope="col" className="px-6 py-3">Address</th>
                 <th scope="col" className="py-3">
-                  <span className="sr-only">Info</span>
-                </th>
-                <th scope="col" className="py-3">
-                  <span className="sr-only">Edit</span>
-                </th>
-                <th scope="col" className="py-3">
-                  <span className="sr-only">Delete</span>
+                  <span className="sr-only">Expand</span>
                 </th>
               </tr>
               </thead>
               <tbody className="border-b border-gray-200">
-              {customers.map((customer, index) => (
-                <tr key={customer._id} className="divide-y border-l-4 border-blue-400">
-                  <td></td>
-                  <td className="px-6 py-4">{customer.name}</td>
-                  <td className="px-6 py-4">{customer.email}</td>
-                  <td className="px-6 py-4">{customer.phone}</td>
-                  <td className="px-6 py-4">{customer.address}</td>
-                  <td className="py-4 text-right">
-                    <Link to={`/customers/viewCustomerDetails/${customer._id}`}>
-                      <InformationCircleIcon
-                        className="h-6 w-6 flex-none bg-gray-200 p-1 rounded-full text-gray-800 hover:bg-gray-500"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  </td>
-
-                    <td className="py-4 text-right">
-                      <Link to={`/customers/editCustomer/${customer._id}`}>
-                        <PencilSquareIcon
-                          className="h-6 w-6 flex-none bg-blue-200 p-1 rounded-full text-gray-800 hover:bg-blue-500"
-                          aria-hidden="true"
-                        />
-                      </Link>
+              {customers.map((customer) => (
+                <React.Fragment key={customer._id}>
+                  <tr className="divide-y border-l-4 border-blue-400">
+                    <td className="px-6 py-4">{customer.name}</td>
+                    <td className="py-4 px-6 text-right">
+                      <button onClick={() => toggleRow(customer._id)}>
+                        {expandedRows.includes(customer._id) ? (
+                          <ChevronUpIcon className="h-6 w-6 text-gray-500" aria-hidden="true"/>
+                        ) : (
+                          <ChevronDownIcon className="h-6 w-6 text-gray-500" aria-hidden="true"/>
+                        )}
+                      </button>
                     </td>
-                </tr>
+                  </tr>
+                  {expandedRows.includes(customer._id) && (
+                    <tr className="bg-gray-50">
+                      <td colSpan={2}>
+                        <div className="p-4 space-y-2">
+                          <p><strong>Email:</strong> {customer.email}</p>
+                          <p><strong>Phone:</strong> {customer.phone}</p>
+                          <p><strong>Address:</strong> {customer.address}</p>
+                          <div className="flex justify-end space-x-4 mt-4">
+                            <Link to={`/customers/viewCustomerDetails/${customer._id}`}>
+                              <InformationCircleIcon
+                                className="h-6 w-6 text-gray-800 hover:text-gray-500"
+                                aria-hidden="true"
+                              />
+                            </Link>
+                            <Link to={`/customers/editCustomer/${customer._id}`}>
+                              <PencilSquareIcon
+                                className="h-6 w-6 text-blue-800 hover:text-blue-500"
+                                aria-hidden="true"
+                              />
+                            </Link>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
               </tbody>
             </table>
           </div>
+
 
         </div>
 

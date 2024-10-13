@@ -11,6 +11,7 @@ import schedulePredictorRoute from "./routes/PredictionRoutes/SchedulePredictorR
 import newScheduleRoute from "./routes/PredictionRoutes/NewScheduleRoute.js";
 import morgan from 'morgan';
 import customerRoutes from "./routes/CustomerRoutes/CustomerRoutes.js";
+import AutoscheduleRoute from "./routes/AutoscheduleRoutes/AutoscheduleRoute.js";
 
 const app = express();
 
@@ -83,6 +84,7 @@ app.use('/device', trackingDeviceRoutes);
 app.use('/predictor', schedulePredictorRoute);
 app.use('/newSchedule', newScheduleRoute);
 app.use('/customer', customerRoutes);
+app.use('/autoschedule', AutoscheduleRoute)
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
