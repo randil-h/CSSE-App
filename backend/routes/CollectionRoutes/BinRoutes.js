@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import Bin from '../../models/Collection/bin.js';
 
 const router = express.Router();
