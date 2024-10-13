@@ -45,14 +45,17 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
+    // Check if 'id' is a string and not an object
+    if (typeof id !== 'string') {
+        return res.status(400).json({ message: 'Invalid binID. Expected a string.' });
+    }
+
     try {
         let bin;
 
-        // If the ID is a valid ObjectId, search by _id
         if (mongoose.Types.ObjectId.isValid(id)) {
             bin = await Bin.findById(id);
         } else {
-            // Otherwise, search by binID field
             bin = await Bin.findOne({ binID: id });
         }
 
@@ -66,7 +69,6 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
-
 
 router.put('/:id', async (req, res) => {
     const { id } = req.params;

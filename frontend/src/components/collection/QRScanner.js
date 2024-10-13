@@ -9,28 +9,34 @@ const QRScanner = ({ selectedCamera, onScan }) => {
     const [success, setSuccess] = useState("");
 
     const handleScan = async (data) => {
-        if (data) {
-            setScanResult(data);
+        // Ensure data is in the correct format (string) before proceeding
+        const binID = typeof data === 'string' ? data : data?.binID || ''; // Adjust based on your data structure
+
+        if (binID) {
+            setScanResult(binID);
             let retryCount = 0;
             const maxRetries = 3;
+
             while (retryCount < maxRetries) {
                 try {
                     console.log("Fetching bin data...");
-                    const response = await axios.get(`https://csse-backend.vercel.app/bin/${data}`);
+                    // Use the corrected binID in the request URL
+                    const response = await axios.get(`https://csse-backend.vercel.app/bin/${binID}`);
                     console.log("Bin data received:", response.data);
                     setBinData(response.data);
 
                     console.log("Updating waste level...");
-                    const updateResponse = await axios.put(`https://csse-backend.vercel.app/bin/${data}`, { wasteLevel: 0 });
+                    const updateResponse = await axios.put(`https://csse-backend.vercel.app/bin/${binID}`, { wasteLevel: 0 });
 
                     if (updateResponse.status === 200) {
                         setSuccess("Bin emptied successfully!");
                         setBinData(prevData => ({ ...prevData, wasteLevel: 0 }));
-                        onScan(data);
+                        onScan(binID); // Call onScan with the correct binID
                         break;
                     }
                 } catch (err) {
                     retryCount += 1;
+
                     if (retryCount >= maxRetries) {
                         console.error("Full error object:", err);
                         let errorMessage = "Unknown error occurred";
@@ -51,6 +57,9 @@ const QRScanner = ({ selectedCamera, onScan }) => {
                     }
                 }
             }
+        } else {
+            console.error("Invalid binID:", binID);
+            setError("Invalid binID provided.");
         }
     };
 
