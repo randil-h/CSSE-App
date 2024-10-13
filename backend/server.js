@@ -15,8 +15,8 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' ? 'https://your-production-domain.com' : '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 app.use(morgan('dev')); // For logging requests in development mode
 
