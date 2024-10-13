@@ -38,7 +38,7 @@ export default function Navbar() {
                         </div>
                     </Link>
                     <Link to="/dashboard" className="nav-item">
-                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-lime-200">
+                        <div className="h-full font-medium px-6 rounded-full transition-all duration-200 hover:bg-sky-200">
                             Dashboard
                         </div>
                     </Link>

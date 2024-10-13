@@ -7,6 +7,7 @@ function QRGenerator() {
     const [qrCodeUrl, setQrCodeUrl] = useState('');
     const [binData, setBinData] = useState(null);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -20,7 +21,7 @@ function QRGenerator() {
 
     const fetchBinData = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:5000/bin/${id}`);
+            const response = await axios.get(`https://csse-backend.vercel.app/bin/${id}`);
             setBinData(response.data);
             setError('');
         } catch (err) {
@@ -30,7 +31,7 @@ function QRGenerator() {
     };
 
     const generateQrCode = (binID) => {
-        const url = `http://localhost:5000/bin/${binID}`;
+        const url = `https://csse-backend.vercel.app/bin/${binID}`;
         setQrCodeUrl(url);
     };
 
@@ -41,37 +42,52 @@ function QRGenerator() {
     };
 
     return (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <h2>Generate Bin QR Code</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Generate Bin QR Code</h2>
+            <form onSubmit={handleSubmit} className="mb-4">
                 <input
                     type="text"
                     value={binID}
                     onChange={(e) => setBinID(e.target.value)}
                     placeholder="Enter Bin ID"
                     required
+                    className="w-full p-2 border rounded mb-2"
                 />
-                <button type="submit">Generate QR Code</button>
+                <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                    Generate QR Code
+                </button>
             </form>
 
-            {qrCodeUrl && (
-                <div style={{ marginTop: "20px" }}>
-                    <h3>Generated QR Code:</h3>
-                    <canvas ref={canvasRef}></canvas>
-                    <p>Scan this code to get bin information</p>
+            {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <span className="block sm:inline">{error}</span>
                 </div>
             )}
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {success && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <span className="block sm:inline">{success}</span>
+                </div>
+            )}
+
+            {qrCodeUrl && (
+                <div className="text-center">
+                    <h3 className="text-xl font-semibold mb-2">Generated QR Code:</h3>
+                    <canvas ref={canvasRef} className="mx-auto"></canvas>
+                    <p className="mt-2 text-sm text-gray-600">Scan this code to get bin information</p>
+                </div>
+            )}
 
             {binData && (
-                <div style={{ marginTop: "20px" }}>
-                    <h3>Bin Information</h3>
-                    <p><strong>Bin ID:</strong> {binData.binID}</p>
-                    <p><strong>Zone:</strong> {binData.zone}</p>
-                    <p><strong>Collector ID:</strong> {binData.collectorID}</p>
-                    <p><strong>Collection Time:</strong> {new Date(binData.collectionTime).toLocaleString()}</p>
-                    <p><strong>Waste Level:</strong> {binData.wasteLevel}</p>
+                <div className="mt-6 bg-gray-100 p-4 rounded-md">
+                    <h3 className="text-xl font-semibold mb-3 text-gray-800">Bin Information</h3>
+                    <div className="space-y-2">
+                        <p><span className="font-medium">Bin ID:</span> {binData.binID}</p>
+                        <p><span className="font-medium">Zone:</span> {binData.zone}</p>
+                        <p><span className="font-medium">Collector ID:</span> {binData.collectorID}</p>
+                        <p><span className="font-medium">Collection Time:</span> {new Date(binData.collectionTime).toLocaleString()}</p>
+                        <p><span className="font-medium">Waste Level:</span> {binData.wasteLevel}%</p>
+                    </div>
                 </div>
             )}
         </div>
