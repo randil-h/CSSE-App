@@ -65,7 +65,6 @@ router.put('/:id', async (req, res) => {
     console.log('Request body:', updateData);
 
     try {
-        // Find the bin first
         let bin;
         try {
             bin = await Bin.findById(id);
@@ -80,14 +79,12 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Bin not found' });
         }
 
-        // Update only the fields that are provided
         Object.keys(updateData).forEach(key => {
             if (updateData[key] !== undefined) {
                 bin[key] = updateData[key];
             }
         });
 
-        // If wasteLevel is being updated, also update the collectionTime
         if (updateData.wasteLevel !== undefined) {
             bin.collectionTime = Date.now();
         }
