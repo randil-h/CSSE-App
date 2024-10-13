@@ -38,7 +38,7 @@ export default function Customers() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("https://csse-backend.vercel.app/customers"); // Replace with your actual backend URL
+        const response = await axios.get("https://csse-backend.vercel.app/customer"); // Replace with your actual backend URL
         if (response.status === 200) {
           setCustomers(response.data);
           setLoading(false);

@@ -29,7 +29,7 @@ export default function Registration() {
     const customerData = { ...formData };
 
     try {
-      const response = await axios.post('https://csse-backend.vercel.app/customers', customerData);
+      const response = await axios.post('https://csse-backend.vercel.app/customer', customerData);
 
       if (response.status === 201) { // Assuming 201 means successful registration
         console.log('Customer registered successfully');

@@ -17,6 +17,7 @@ import MonitorWasteLevel from "./pages/monitor_waste/MonitorWasteLevel";
 import QRPage from "./pages/collection_pages/QRCode";
 import QRScanPage from "./pages/collection_pages/QRScanPage";
 import Registration from "./pages/customers_pages/Registration";
+import Autoschedule from "./pages/schedules_pages/Autoschedule";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -38,7 +39,6 @@ function App() {
               <Route path="/" element={<LandingPage/>}/>
               <Route path="/dashboard" element={<Dashboard />} />
 
-              <Route path="/customers/home" element={<Customers />} />
 
               <Route path="/collection" element={<Collection />} />
               <Route path="/collection/qr-code" element={<QRPage />} />
@@ -59,6 +59,7 @@ function App() {
 
               <Route path="/customers" element={<Customers/>}/>
               <Route path="/registration" element={<Registration/>}/>
+              <Route path="/autoschedules" element={<Autoschedule/>}/>
 
             </Routes>
         )}
