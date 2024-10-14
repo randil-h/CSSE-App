@@ -45,41 +45,51 @@ export default function Autoschedule() {
       <div className="flex flex-1 relative">
         {/* Main content */}
         <div className="flex-1 p-4 transition-all duration-300 ease-in-out">
-          <h2 className="text-xl font-semibold mb-4">Scheduled Bins</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800">Scheduled Bins</h2>
           {schedules.length > 0 ? (
-            <table className="min-w-full bg-white shadow-md rounded-lg">
-              <thead>
+            <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
+              <thead className="bg-gray-100">
               <tr>
-                <th className="p-2 text-left">Bin ID</th>
-                <th className="p-2 text-left">Status</th>
-                <th className="p-2 text-left">Date</th>
-                <th className="p-2 text-left">Time</th>
+                <th className="p-3 text-left text-gray-600 font-semibold uppercase">Bin ID</th>
+                <th className="p-3 text-left text-gray-600 font-semibold uppercase">Status</th>
+                <th className="p-3 text-left text-gray-600 font-semibold uppercase">Date</th>
+                <th className="p-3 text-left text-gray-600 font-semibold uppercase">Time</th>
               </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-200">
               {schedules.map(schedule => (
-                <tr key={schedule._id} className="border-b">
-                  <td className="p-2">{schedule.binID}</td>
-                  <td className={`p-2 ${schedule.status === 'Completed' ? 'text-green-500' : ''}`}>
+                <tr
+                  key={schedule._id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  <td className="p-3 text-gray-900 font-semibold">{schedule.binID}</td>
+                  <td
+                    className={`p-3 font-medium ${
+                      schedule.status === 'Completed' ? 'text-green-500' : 'text-red-500'
+                    }`}
+                  >
                     {schedule.status}
                   </td>
-                  <td className="p-2">{new Date(schedule.date).toLocaleDateString()}</td>
-                  <td className="p-2">{schedule.time}</td>
+                  <td className="p-3 text-gray-500">
+                    {new Date(schedule.date).toLocaleDateString()}
+                  </td>
+                  <td className="p-3 text-gray-500">{schedule.time}</td>
                 </tr>
               ))}
               </tbody>
             </table>
           ) : (
-            <div>No schedules available.</div>
+            <div className="text-gray-500">No schedules available.</div>
           )}
         </div>
+
 
         {/* Sidebar */}
         <div
           className={`absolute top-0 left-0 h-full bg-white shadow-lg z-40 p-4 transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0' : '-translate-x-full'}`}
           style={{width: '300px'}}  // Sidebar width
         >
-          <SideBar onClose={toggleSidebar} />
+          <SideBar onClose={toggleSidebar}/>
         </div>
       </div>
     </div>

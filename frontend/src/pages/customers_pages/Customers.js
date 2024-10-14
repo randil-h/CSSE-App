@@ -117,7 +117,7 @@ export default function Customers() {
               <tbody className="border-b border-gray-200">
               {customers.map((customer) => (
                 <React.Fragment key={customer._id}>
-                  <tr className="divide-y border-l-4 border-blue-400">
+                  <tr className="divide-y border-l-4 border-sky-800">
                     <td className="px-6 py-4">{customer.name}</td>
                     <td className="py-4 px-6 text-right">
                       <button onClick={() => toggleRow(customer._id)}>
