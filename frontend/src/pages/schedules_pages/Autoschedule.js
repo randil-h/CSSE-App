@@ -11,7 +11,7 @@ export default function Autoschedule() {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await axios.get('http://localhost:5555/autoschedule'); // Replace with your actual endpoint
+        const response = await axios.get('https://csse-backend.vercel.app/autoschedule'); // Replace with your actual endpoint
         setSchedules(response.data);
       } catch (error) {
         console.error("Error fetching schedules", error);

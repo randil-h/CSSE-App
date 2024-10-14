@@ -7,8 +7,6 @@ import Breadcrumb from "../../components/utility/Breadcrumbs";
 import SchedulePredictionChart from "../../components/predictors/SchedulePredictorChart";
 import {MdSensors} from "react-icons/md";
 import {AiFillSchedule, AiOutlineSchedule} from "react-icons/ai";
-import MapComponent from "../../components/predictors/MapComponent";
-import ReportsNavigation from "../../components/reports/ReportsNavigation";
 import SchedulesByHourChart from "../../components/predictors/SchedulesByHourChart";
 
 const breadcrumbItems = [
@@ -313,7 +311,7 @@ export default function Reports() {
                 </div>
 
                 <div className="flex-1 w-full sm:w-5/6 p-4 flex flex-col">
-                    <ReportsNavigation/>
+                    {/*<ReportsNavigation/>*/}
                     <div className="flex flex-row items-center space-x-2 mb-4">
                         <BackButton/>
                         <Breadcrumb items={breadcrumbItems}/>
