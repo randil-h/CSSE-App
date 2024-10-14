@@ -90,7 +90,8 @@ router.get('/charts', async (req, res) => {
 
         const schedules = await Schedule.aggregate([
             { $match: query }, // Match filtered dates
-            { $group: { _id: "$location", count: { $sum: 1 } } } // Group by location and count
+            { $group: { _id: "$location", count: { $sum: 1 } } }, // Group by location and count
+            { $sort: { _id: 1}}
         ]);
 
         res.status(200).send(schedules);

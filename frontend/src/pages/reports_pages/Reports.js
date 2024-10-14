@@ -5,6 +5,11 @@ import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
 import Breadcrumb from "../../components/utility/Breadcrumbs";
 import SchedulePredictionChart from "../../components/predictors/SchedulePredictorChart";
+import {MdSensors} from "react-icons/md";
+import {AiFillSchedule, AiOutlineSchedule} from "react-icons/ai";
+import MapComponent from "../../components/predictors/MapComponent";
+import ReportsNavigation from "../../components/reports/ReportsNavigation";
+import SchedulesByHourChart from "../../components/predictors/SchedulesByHourChart";
 
 const breadcrumbItems = [
     { name: 'Reports', href: '/reports/home' },
@@ -308,6 +313,7 @@ export default function Reports() {
                 </div>
 
                 <div className="flex-1 w-full sm:w-5/6 p-4 flex flex-col">
+                    <ReportsNavigation/>
                     <div className="flex flex-row items-center space-x-2 mb-4">
                         <BackButton/>
                         <Breadcrumb items={breadcrumbItems}/>
@@ -322,19 +328,19 @@ export default function Reports() {
                             <div
                                 className="flex space-x-2 mb-4 lg:mb-6 px-4 md:px-8 lg:px-16 justify-center"> {/* Responsive padding */}
                                 <button
-                                    className={`px-4 py-2 rounded-lg ${filter === 'week' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-300 text-black font-semibold'}`}
+                                    className={`px-4 py-2 rounded-lg ${filter === 'week' ? 'bg-gradient-to-tr from-sky-700 via-blue-500 to-sky-300 text-white font-bold' : 'bg-blue-200 text-black font-semibold'}`}
                                     onClick={() => setFilter('week')}
                                 >
                                     Week
                                 </button>
                                 <button
-                                    className={`px-4 py-2 rounded-lg ${filter === 'month' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-300 text-black font-semibold'}`}
+                                    className={`px-4 py-2 rounded-lg ${filter === 'month' ? 'bg-gradient-to-tr from-sky-700 via-blue-500 to-sky-300 text-white font-bold' : 'bg-blue-200 text-black font-semibold'}`}
                                     onClick={() => setFilter('month')}
                                 >
                                     Month
                                 </button>
                                 <button
-                                    className={`px-4 py-2 rounded-lg ${filter === 'year' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-300 text-black font-semibold'}`}
+                                    className={`px-4 py-2 rounded-lg ${filter === 'year' ? 'bg-gradient-to-tr from-sky-700 via-blue-500 to-sky-300 text-white font-bold' : 'bg-blue-200 text-black font-semibold'}`}
                                     onClick={() => setFilter('year')}
                                 >
                                     Year
@@ -348,25 +354,34 @@ export default function Reports() {
                     <div
                         className="flex flex-col sm:flex-row w-full items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                         {/* Chart 1 */}
-                        <div className="w-full sm:w-1/2 bg-blue-50 border p-4 shadow rounded-lg">
-                            <div className="flex justify-center">
-                                <h4 className="text-md font-bold">Number of Schedules by Location</h4>
-                            </div>
-                            <div id="chart1"></div>
-                        </div>
-
-                        {/* Chart 2 */}
-                        <div className="w-full sm:w-1/2 bg-blue-50 border p-4 shadow rounded-lg">
-                            <div className="flex justify-center">
-                                <h4 className="text-md font-bold">Tracking Devices Installed by Location</h4>
+                        <div className="w-full sm:w-1/2  border p-4 shadow-lg rounded-xl">
+                            <div className="flex justify-center justify-items-center">
+                                <h4 className="text-md font-bold mr-2 lg:mr-2 sm:mr-1.5">Tracking Devices Installed by
+                                    Location</h4>
+                                <MdSensors size={30} className="blink-icon"/>
                             </div>
                             <div id="chart2"></div>
                         </div>
-                    </div>
-                    <div>
-                        <SchedulePredictionChart/>
-                    </div>
 
+                        {/* Chart 2 */}
+                        <div className="w-full sm:w-1/2 border p-4 shadow-lg rounded-xl">
+                            <div className="flex justify-center ">
+                                <h4 className="text-md font-bold mr-2 lg:mr-2 sm:mr-1.5 md:mr-2">Number of Schedules by
+                                    Location</h4>
+                                <AiOutlineSchedule size={30}/>
+                            </div>
+                            <div id="chart1"></div>
+                        </div>
+                    </div>
+                    <div
+                        className="flex flex-col sm:flex-row w-full items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                        <div className="w-full">
+                            <SchedulePredictionChart/>
+                        </div>
+                        <div className="w-full">
+                            <SchedulesByHourChart/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
