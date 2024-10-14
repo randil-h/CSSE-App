@@ -117,7 +117,8 @@ router.get('/charts', async (req, res) => {
 
         const device = await Device.aggregate([
             { $match: query }, // Match filtered dates
-            { $group: { _id: "$zone", count: { $sum: 1 } } } // Group by location and count
+            { $group: { _id: "$zone", count: { $sum: 1 } } }, // Group by location and count
+            { $sort: { _id: 1}}
         ]);
 
         res.status(200).send(device);

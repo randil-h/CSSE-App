@@ -109,7 +109,8 @@ router.get('/charts', async (req, res) => {
 
         const schedules = await NewSchedule.aggregate([
             { $match: query }, // Match filtered dates
-            { $group: { _id: "$location", count: { $sum: 1 } } } // Group by location and count
+            { $group: { _id: "$location", count: { $sum: 1 } } }, // Group by location and count
+            { $sort: { _id: 1}}
         ]);
 
         res.status(200).send(schedules);
@@ -118,6 +119,92 @@ router.get('/charts', async (req, res) => {
     }
 });
 
+router.get('/timeslot-average', async (req, res) => {
+    const { dayOfWeek } = req.query; // Get the day of the week filter (optional)
+
+    // Define the timeslots (in military time format)
+    const timeslots = [
+        { start: '08:00', end: '10:00' },
+        { start: '10:00', end: '12:00' },
+        { start: '12:00', end: '14:00' },
+        { start: '14:00', end: '16:00' },
+        { start: '16:00', end: '18:00' },
+        { start: '18:00', end: '20:00' },
+    ];
+
+    try {
+        // Creating match query for the day of the week filter
+        const match = {};
+        if (dayOfWeek) {
+            match.$expr = {
+                $eq: [{ $dayOfWeek: "$date" }, parseInt(dayOfWeek)] // 1 = Sunday, 7 = Saturday
+            };
+        }
+
+        const schedules = await NewSchedule.aggregate([
+            { $match: match }, // Match by day of the week if provided
+            {
+                $addFields: {
+                    // Split the time string into start and end times
+                    timeRange: {
+                        $split: ["$time", " - "]
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    startTime: { $arrayElemAt: ["$timeRange", 0] }, // Get the start time
+                    endTime: { $arrayElemAt: ["$timeRange", 1] } // Get the end time
+                }
+            },
+            {
+                $addFields: {
+                    timeslot: {
+                        $switch: {
+                            branches: timeslots.map((slot, index) => ({
+                                case: {
+                                    $and: [
+                                        { $eq: ["$startTime", slot.start] }, // Match start time
+                                        { $eq: ["$endTime", slot.end] } // Match end time
+                                    ]
+                                },
+                                then: index + 1 // Assign an index to each timeslot
+                            })),
+                            default: null
+                        }
+                    }
+                }
+            },
+            { $match: { timeslot: { $ne: null } } }, // Only include documents that match a timeslot
+            {
+                $group: {
+                    _id: "$timeslot", // Group by timeslot
+                    totalSchedules: { $sum: 1 }, // Count the schedules
+                    daysWithSchedules: { $addToSet: { $dayOfYear: "$date" } } // Count unique days
+                }
+            },
+            {
+                $addFields: {
+                    daysCount: { $size: "$daysWithSchedules" }, // Number of unique days
+                    averageSchedules: { $divide: ["$totalSchedules", { $size: "$daysWithSchedules" }] } // Calculate average
+                }
+            },
+            {
+                $sort: { _id: 1 } // Sort by timeslot
+            }
+        ]);
+
+        // Format the response with timeslot labels
+        const response = schedules.map(schedule => ({
+            timeslot: `${timeslots[schedule._id - 1].start}-${timeslots[schedule._id - 1].end}`,
+            averageSchedules: schedule.averageSchedules
+        }));
+
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
 
 
 export default router;
