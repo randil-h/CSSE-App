@@ -21,7 +21,7 @@ const SchedulePredictionChart = () => {
 
     return (
         <div className="border-2 rounded-xl shadow-lg mt-4">
-            <div className="flex p-3 justify-center">
+            <div className="flex p-3 justify-center items-center">
                 <h1 className="font-semibold text-lg mr-2 lg:mr-2 md:mr-2 sm:mr-1.5">Predicted Schedules for Upcoming Month</h1>
                 <FaArrowTrendUp size={25} />
             </div>
@@ -29,10 +29,10 @@ const SchedulePredictionChart = () => {
                 <BarChart data={data} margin={{top: 5, right: 10, left: 10, bottom: 20}}>
                     <CartesianGrid strokeDasharray="3 3"/>
                     <XAxis dataKey="location">
-                        <Label value="Location" position="insideBottom" offset={-10} style={{fontWeight: "bold", fill: 'black'}}/>
+                        <Label value="Location" position="insideBottom" offset={-10} style={{fontWeight: "bold"}}/>
                     </XAxis>
                     <YAxis>
-                        <Label value="Predicted Schedules" color="black" angle={-90} position="insideLeft" offset={10} dy={30} style={{fontWeight: "bold", fill: 'black'}}/>
+                        <Label value="Predicted Schedules" color="black" angle={-90} position="insideLeft" offset={10} dy={30} style={{fontWeight: "bold"}}/>
                     </YAxis>
                     <Tooltip/>
                     <Legend layout="horizontal" align="center" verticalAlign="top" />

@@ -4,10 +4,12 @@ import Navbar from "../../components/utility/Navbar";
 import SideBar from "../../components/utility/SideBar";
 import BackButton from "../../components/utility/BackButton";
 import Breadcrumb from "../../components/utility/Breadcrumbs";
-import SchedulePredictionChart from "../../components/predictors/SchedulePredictorChart";
+import SchedulePredictionChart from "../../components/charts/SchedulePredictorChart";
 import {MdSensors} from "react-icons/md";
 import {AiFillSchedule, AiOutlineSchedule} from "react-icons/ai";
-import SchedulesByHourChart from "../../components/predictors/SchedulesByHourChart";
+import SchedulesByHourChart from "../../components/charts/SchedulesByHourChart";
+import CollectionTruckRadialChart from "../../components/charts/CollectionTruckRadialChart";
+import {PiTruckFill} from "react-icons/pi";
 
 const breadcrumbItems = [
     { name: 'Reports', href: '/reports/home' },
@@ -306,7 +308,7 @@ export default function Reports() {
             {/* Sidebar and Main Content */}
             <div className="flex flex-1">
                 {/* Sidebar hidden on smaller screens */}
-                <div className="hidden sm:block w-1/6">
+                <div className="hidden sm:block w-1/6 sticky top-0 self-start">
                     <SideBar />
                 </div>
 
@@ -374,11 +376,14 @@ export default function Reports() {
                     <div
                         className="flex flex-col sm:flex-row w-full items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                         <div className="w-full">
-                            <SchedulePredictionChart/>
+                            <CollectionTruckRadialChart/>
                         </div>
                         <div className="w-full">
                             <SchedulesByHourChart/>
                         </div>
+                    </div>
+                    <div>
+                        <SchedulePredictionChart/>
                     </div>
                 </div>
             </div>
