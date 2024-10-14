@@ -129,6 +129,7 @@ const QRScanner = ({ selectedCamera, onScan }) => {
                         </div>
                     </div>
                 </div>
+
             )}
         </div>
     );
